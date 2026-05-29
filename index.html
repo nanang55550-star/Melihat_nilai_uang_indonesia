@@ -1,8 +1,9 @@
+:Keadaan Indonesia Real-Time 3D:index.html
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Keadaan Indonesia - IHSG & USD/IDR Real-Time</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -11,6 +12,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -28,16 +30,16 @@
         }
         .header {
             text-align: center;
-            padding: 20px;
+            padding: 15px 10px;
             background: rgba(0, 0, 0, 0.4);
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            z-index: 10;
+            z-index: 20;
         }
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-transform: uppercase;
             background: linear-gradient(90deg, #00d4ff, #7b2cbf);
             -webkit-background-clip: text;
@@ -47,9 +49,9 @@
         }
         .main-display {
             flex: 1;
-            display: flex;
             position: relative;
             overflow: hidden;
+            width: 100%;
         }
         .panel {
             position: absolute;
@@ -58,15 +60,17 @@
             width: 100%;
             height: 100%;
             display: flex;
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            transition: opacity 0.5s ease, transform 0.5s ease;
             opacity: 0;
-            transform: scale(0.95);
+            transform: scale(0.97) translateY(10px);
             pointer-events: none;
+            z-index: 1;
         }
         .panel.active {
             opacity: 1;
-            transform: scale(1);
+            transform: scale(1) translateY(0);
             pointer-events: all;
+            z-index: 5;
         }
         .info-section {
             width: 40%;
@@ -76,9 +80,11 @@
             padding: 40px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
+            z-index: 10;
         }
         .chart-section {
             width: 60%;
+            height: 100%;
             position: relative;
         }
         .chart-container {
@@ -86,20 +92,20 @@
             height: 100%;
         }
         .ticker-label {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #888;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         .value-main {
-            font-size: 4rem;
+            font-size: 3.2rem;
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 15px;
         }
         .value-sub {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: 600;
             display: flex;
             align-items: center;
@@ -113,81 +119,126 @@
             color: #2ed573;
         }
         .change-pct {
-            font-size: 2.2rem;
+            font-size: 2rem;
             font-weight: 700;
         }
         .change-abs {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: #aaa;
-        }
-        .timeframe {
-            font-size: 1.1rem;
-            color: #666;
-            letter-spacing: 2px;
         }
         .divider {
             width: 60px;
             height: 3px;
             background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            margin: 20px 0;
+            margin: 15px 0;
             border-radius: 2px;
         }
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            padding: 25px;
+            gap: 15px;
+            padding: 20px;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(10px);
             border-top: 2px solid rgba(255, 255, 255, 0.1);
-            z-index: 10;
+            z-index: 20;
         }
         .btn-toggle {
-            padding: 15px 50px;
-            font-size: 1.2rem;
+            padding: 12px 40px;
+            font-size: 1.1rem;
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            color: #888;
             cursor: pointer;
             border-radius: 50px;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             backdrop-filter: blur(5px);
         }
         .btn-toggle:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
         .btn-toggle.active {
             background: linear-gradient(135deg, #00d4ff, #7b2cbf);
             border-color: transparent;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+            color: #fff;
+            box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
         }
         .rotate-hint {
             position: absolute;
             bottom: 20px;
-            right: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.6);
+            padding: 6px 14px;
             border-radius: 20px;
             pointer-events: none;
-            z-index: 5;
+            z-index: 10;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        /* PERBAIKAN: Layout responsif HP agar tidak ambles/terpotong */
+
+        /* PERBAIKAN TOTAL: CSS Responsif untuk Seluruh Layar HP */
         @media (max-width: 900px) {
-            .main-display { overflow-y: auto; }
-            .panel { flex-direction: column; position: relative; height: auto; }
-            .info-section { width: 100%; padding: 25px; }
-            .chart-section { width: 100%; height: 380px; flex-shrink: 0; } /* Tinggi grafik dikunci agar pas */
-            .value-main { font-size: 2.5rem; }
-            .header h1 { font-size: 1.5rem; letter-spacing: 4px; }
+            .header h1 {
+                font-size: 1.4rem;
+                letter-spacing: 4px;
+            }
+            .panel {
+                flex-direction: column;
+                /* PENTING: Jaga agar tetap absolute agar sistem tab penumpukan halaman bekerja normal */
+                position: absolute; 
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .info-section {
+                width: 100%;
+                padding: 25px 20px 15px 20px;
+                background: rgba(0, 0, 0, 0.2);
+                backdrop-filter: none;
+                flex-shrink: 0;
+            }
+            .value-main {
+                font-size: 2.2rem;
+                margin-bottom: 8px;
+            }
+            .value-sub {
+                font-size: 1.3rem;
+            }
+            .change-pct {
+                font-size: 1.6rem;
+            }
+            .change-abs {
+                font-size: 1rem;
+            }
+            .divider {
+                margin: 10px 0;
+            }
+            .chart-section {
+                width: 100%;
+                height: 340px; /* Batasi tinggi konkrit agar WebGL Three.js mengalkulasi resolusi secara pas */
+                flex-shrink: 0;
+                background: rgba(0,0,0,0.15);
+            }
+            .controls {
+                padding: 12px;
+                gap: 10px;
+            }
+            .btn-toggle {
+                padding: 10px 30px;
+                font-size: 0.95rem;
+            }
+            .rotate-hint {
+                bottom: 15px;
+            }
         }
     </style>
 </head>
@@ -198,6 +249,7 @@
         </div>
 
         <div class="main-display">
+            <!-- IHSG Panel -->
             <div class="panel active" id="panel-ihsg">
                 <div class="info-section">
                     <div class="ticker-label">Indeks Harga Saham Gabungan</div>
@@ -208,37 +260,39 @@
                         <span class="change-pct" style="color: #ff4757;">-14.02%</span>
                     </div>
                     <div class="change-abs">(-1,004.94) 1THN</div>
-                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                    <div style="margin-top: 12px; font-size: 0.85rem; color: #888;">
                         Perubahan Harian: <span style="color: #2ed573;">+67.10 (+1.10%)</span>
                     </div>
                 </div>
                 <div class="chart-section">
                     <div class="chart-container" id="chart-ihsg"></div>
-                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
+                    <div class="rotate-hint">🔄 Putar untuk eksplorasi 3D</div>
                 </div>
             </div>
 
+            <!-- USD/IDR Panel -->
             <div class="panel" id="panel-usdidr">
                 <div class="info-section">
                     <div class="ticker-label">Kurs Dollar Amerika ke Rupiah</div>
-                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.5rem; color: #888;">per 1 Dollar</span></div>
+                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.2rem; color: #888;">per 1 Dollar</span></div>
                     <div class="divider"></div>
                     <div class="value-sub">
                         <span class="arrow-up">&#8593;</span>
                         <span class="change-pct" style="color: #ff4757;">+8.35%</span>
                     </div>
                     <div class="change-abs">(+1,364.40) 1THN</div>
-                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                    <div style="margin-top: 12px; font-size: 0.85rem; color: #888;">
                         Tren: Rupiah Melemah terhadap Dollar
                     </div>
                 </div>
                 <div class="chart-section">
                     <div class="chart-container" id="chart-usdidr"></div>
-                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
+                    <div class="rotate-hint">🔄 Putar untuk eksplorasi 3D</div>
                 </div>
             </div>
         </div>
 
+        <!-- PERBAIKAN: Mengirimkan parameter 'this' agar manipulasi tombol akurat tanpa global 'event' -->
         <div class="controls">
             <button class="btn-toggle active" onclick="switchPanel('ihsg', this)">IHSG</button>
             <button class="btn-toggle" onclick="switchPanel('usdidr', this)">IDR</button>
@@ -256,7 +310,7 @@
         let autoRotateIntervals = {};
         let isInteracting = {};
 
-        // PERBAIKAN: Mengganti variabel global 'event' dengan parameter 'button' langsung
+        // PERBAIKAN: Mengganti variabel global 'event' dengan parameter 'button' langsung agar tidak eror di browser tertentu
         function switchPanel(panel, button) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
@@ -266,10 +320,17 @@
 
             currentScene = panel;
 
-            if (autoRotateIntervals[panel]) {
-                clearInterval(autoRotateIntervals[panel]);
+            // Paksa Three.js mengalkulasi ulang ukuran kanvas saat transisi panel aktif (untuk atasi render mengecil)
+            const containerId = 'chart-' + panel;
+            if (scenes[containerId]) {
+                const container = document.getElementById(containerId);
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                scenes[containerId].camera.aspect = width / height;
+                scenes[containerId].camera.updateProjectionMatrix();
+                scenes[containerId].renderer.setSize(width, height);
+                isInteracting[containerId] = false;
             }
-            startAutoRotate(panel);
         }
 
         function createCandlestickChart(containerId, data, colorUp, colorDown, scaleFactor = 1) {
@@ -279,7 +340,7 @@
 
             // Scene
             const scene = new THREE.Scene();
-            // PERBAIKAN: Menghapus scene.background agar kanvas menjadi transparan mengikuti gradien CSS body
+            // PERBAIKAN: Menghapus background solid agar transparan mengikuti warna gradien CSS body utama
 
             // Camera
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
@@ -288,7 +349,7 @@
             // PERBAIKAN: Menambahkan alpha: true pada WebGLRenderer agar background transparan
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(width, height);
-            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cegah render berlebih di layar Retina/High-Res
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
@@ -303,25 +364,25 @@
             controls.maxDistance = 800;
 
             // Lighting
-            const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.8);
             scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
             dirLight.position.set(100, 200, 100);
             dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 2048;
-            dirLight.shadow.mapSize.height = 2048;
+            dirLight.shadow.mapSize.width = 1024; // Dioptimalkan untuk performa HP agar ramah baterai
+            dirLight.shadow.mapSize.height = 1024;
             scene.add(dirLight);
 
-            const pointLight1 = new THREE.PointLight(0x00d4ff, 0.8, 500);
+            const pointLight1 = new THREE.PointLight(0x00d4ff, 1, 500);
             pointLight1.position.set(-100, 100, 100);
             scene.add(pointLight1);
 
-            const pointLight2 = new THREE.PointLight(0x7b2cbf, 0.8, 500);
+            const pointLight2 = new THREE.PointLight(0x7b2cbf, 1, 500);
             pointLight2.position.set(100, 100, -100);
             scene.add(pointLight2);
 
-            // Find min/max for normalization
+            // Cari nilai min/max
             let minVal = Infinity, maxVal = -Infinity;
             data.forEach(d => {
                 minVal = Math.min(minVal, d.low);
@@ -331,7 +392,7 @@
             const range = maxVal - minVal;
             const midVal = (maxVal + minVal) / 2;
 
-            // Create candlesticks
+            // Membuat Candlesticks
             const candleGroup = new THREE.Group();
             const spacing = 8;
             const startX = -(data.length * spacing) / 2;
@@ -339,10 +400,10 @@
             data.forEach((d, i) => {
                 const x = startX + i * spacing;
 
-                const openY = ((d.open - midVal) / range) * 200 * scaleFactor;
-                const closeY = ((d.close - midVal) / range) * 200 * scaleFactor;
-                const highY = ((d.high - midVal) / range) * 200 * scaleFactor;
-                const lowY = ((d.low - midVal) / range) * 200 * scaleFactor;
+                const openY = ((d.open - midVal) / range) * 180 * scaleFactor;
+                const closeY = ((d.close - midVal) / range) * 180 * scaleFactor;
+                const highY = ((d.high - midVal) / range) * 180 * scaleFactor;
+                const lowY = ((d.low - midVal) / range) * 180 * scaleFactor;
 
                 const isUp = d.close >= d.open;
                 const color = isUp ? colorUp : colorDown;
@@ -350,7 +411,7 @@
                 // Body (box)
                 const bodyHeight = Math.abs(closeY - openY);
                 const bodyMid = (openY + closeY) / 2;
-                const bodyGeo = new THREE.BoxGeometry(4, Math.max(bodyHeight, 1), 4);
+                const bodyGeo = new THREE.BoxGeometry(4, Math.max(bodyHeight, 1.5), 4);
                 const bodyMat = new THREE.MeshStandardMaterial({ 
                     color: color,
                     metalness: 0.6,
@@ -364,7 +425,7 @@
                 body.receiveShadow = true;
                 candleGroup.add(body);
 
-                // Wick (line)
+                // Wick (Sumbu Lilin)
                 const wickHeight = highY - lowY;
                 const wickGeo = new THREE.BoxGeometry(1, wickHeight, 1);
                 const wickMat = new THREE.MeshStandardMaterial({ 
@@ -376,12 +437,12 @@
                 wick.position.set(x, (highY + lowY) / 2, 0);
                 candleGroup.add(wick);
 
-                // Add glow effect
-                const glowGeo = new THREE.BoxGeometry(5, Math.max(bodyHeight, 1) + 2, 5);
+                // Glow Ring Effect
+                const glowGeo = new THREE.BoxGeometry(4.8, Math.max(bodyHeight, 1.5) + 1, 4.8);
                 const glowMat = new THREE.MeshBasicMaterial({
                     color: color,
                     transparent: true,
-                    opacity: 0.1
+                    opacity: 0.08
                 });
                 const glow = new THREE.Mesh(glowGeo, glowMat);
                 glow.position.set(x, bodyMid, 0);
@@ -390,14 +451,14 @@
 
             scene.add(candleGroup);
 
-            // Floor grid
-            const gridHelper = new THREE.GridHelper(600, 30, 0x333333, 0x222222);
-            gridHelper.position.y = -120;
+            // Grid Lantai
+            const gridHelper = new THREE.GridHelper(600, 30, 0x444444, 0x222222);
+            gridHelper.position.y = -110;
             scene.add(gridHelper);
 
-            // Background particles
+            // Efek Partikel Latar Belakang
             const particlesGeo = new THREE.BufferGeometry();
-            const particleCount = 200;
+            const particleCount = 150;
             const posArray = new Float32Array(particleCount * 3);
             for (let i = 0; i < particleCount * 3; i++) {
                 posArray[i] = (Math.random() - 0.5) * 800;
@@ -407,12 +468,12 @@
                 size: 2,
                 color: 0x00d4ff,
                 transparent: true,
-                opacity: 0.6
+                opacity: 0.5
             });
             const particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
-            // Store references
+            // Simpan Referensi untuk manipulasi ukuran dan rotasi
             scenes[containerId] = {
                 scene, camera, renderer, controls, candleGroup, particles
             };
@@ -431,6 +492,7 @@
                 }, 3000);
             });
 
+            // Animasi Putar Otomatis
             function animate() {
                 animationIds[containerId] = requestAnimationFrame(animate);
 
@@ -438,14 +500,15 @@
                     candleGroup.rotation.y += 0.003;
                 }
 
-                particles.rotation.y += 0.001;
-                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.0008;
+                particles.rotation.x += 0.0003;
 
                 controls.update();
                 renderer.render(scene, camera);
             }
             animate();
 
+            // Atasi perubahan ukuran layar
             window.addEventListener('resize', () => {
                 const newWidth = container.clientWidth;
                 const newHeight = container.clientHeight;
@@ -462,12 +525,16 @@
             }
         }
 
-        // Initialize charts
+        // Jalankan Inisialisasi Grafik
         window.addEventListener('load', () => {
+            // Memastikan DOM siap dan terhitung sempurna oleh browser sebelum ThreeJS dimuat
             setTimeout(() => {
                 createCandlestickChart('chart-ihsg', ihsgData, 0x2ed573, 0xff4757, 1.0);
                 createCandlestickChart('chart-usdidr', usdidrData, 0x2ed573, 0xff4757, 1.0);
-            }, 150); // Sedikit menaikkan jeda agar browser selesai merender layout dengan sempurna
+                
+                // Trigger resize manual sekali di awal agar rasio grafik langsung pas 100%
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
         });
     </script>
 </body>
