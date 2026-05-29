@@ -29,14 +29,14 @@
         }
         .header {
             text-align: center;
-            padding: 15px 10px;
+            padding: 12px 10px 8px;
             background: rgba(0, 0, 0, 0.4);
             border-bottom: 2px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             z-index: 20;
         }
         .header h1 {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 6px;
             text-transform: uppercase;
@@ -45,6 +45,42 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
             text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        .controls-top {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 20;
+        }
+        .btn-toggle {
+            padding: 8px 32px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.03);
+            color: #888;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(5px);
+        }
+        .btn-toggle:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+        .btn-toggle.active {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border-color: transparent;
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
         }
         .main-display {
             flex: 1;
@@ -72,17 +108,17 @@
             z-index: 5;
         }
         .info-section {
-            width: 40%;
+            width: 38%;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 40px;
+            padding: 35px;
             background: rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
             z-index: 10;
         }
         .chart-section {
-            width: 60%;
+            width: 62%;
             height: 100%;
             position: relative;
         }
@@ -91,25 +127,25 @@
             height: 100%;
         }
         .ticker-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #888;
             letter-spacing: 2px;
             text-transform: uppercase;
             margin-bottom: 8px;
         }
         .value-main {
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             font-weight: 800;
             line-height: 1.1;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .value-sub {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .arrow-down {
             color: #ff4757;
@@ -118,125 +154,89 @@
             color: #2ed573;
         }
         .change-pct {
-            font-size: 2rem;
+            font-size: 1.8rem;
             font-weight: 700;
         }
         .change-abs {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #aaa;
         }
         .divider {
             width: 60px;
             height: 3px;
             background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            margin: 15px 0;
+            margin: 12px 0;
             border-radius: 2px;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-top: 2px solid rgba(255, 255, 255, 0.1);
-            z-index: 20;
-        }
-        .btn-toggle {
-            padding: 12px 40px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            background: rgba(255, 255, 255, 0.03);
-            color: #888;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(5px);
-        }
-        .btn-toggle:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
-        }
-        .btn-toggle.active {
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
-            border-color: transparent;
-            color: #fff;
-            box-shadow: 0 0 25px rgba(0, 212, 255, 0.4);
         }
         .rotate-hint {
             position: absolute;
-            bottom: 20px;
+            bottom: 18px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.45);
             background: rgba(0, 0, 0, 0.6);
-            padding: 6px 14px;
+            padding: 5px 14px;
             border-radius: 20px;
             pointer-events: none;
             z-index: 10;
             white-space: nowrap;
             letter-spacing: 1px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
         }
 
-        /* PERBAIKAN TOTAL: CSS Responsif untuk Seluruh Layar HP */
         @media (max-width: 900px) {
             .header h1 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
                 letter-spacing: 4px;
+            }
+            .controls-top {
+                padding: 8px;
+                gap: 8px;
+            }
+            .btn-toggle {
+                padding: 7px 24px;
+                font-size: 0.85rem;
             }
             .panel {
                 flex-direction: column;
-                /* PENTING: Jaga agar tetap absolute agar sistem tab penumpukan halaman bekerja normal */
-                position: absolute; 
+                position: absolute;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
             .info-section {
                 width: 100%;
-                padding: 25px 20px 15px 20px;
+                padding: 20px 18px 12px;
                 background: rgba(0, 0, 0, 0.2);
                 backdrop-filter: none;
                 flex-shrink: 0;
             }
             .value-main {
-                font-size: 2.2rem;
-                margin-bottom: 8px;
+                font-size: 2rem;
+                margin-bottom: 6px;
             }
             .value-sub {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
             }
             .change-pct {
-                font-size: 1.6rem;
+                font-size: 1.5rem;
             }
             .change-abs {
-                font-size: 1rem;
+                font-size: 0.95rem;
             }
             .divider {
-                margin: 10px 0;
+                margin: 8px 0;
             }
             .chart-section {
                 width: 100%;
-                height: 340px; /* Batasi tinggi konkrit agar WebGL Three.js mengalkulasi resolusi secara pas */
+                height: 320px;
                 flex-shrink: 0;
                 background: rgba(0,0,0,0.15);
             }
-            .controls {
-                padding: 12px;
-                gap: 10px;
-            }
-            .btn-toggle {
-                padding: 10px 30px;
-                font-size: 0.95rem;
-            }
             .rotate-hint {
-                bottom: 15px;
+                bottom: 12px;
+                font-size: 0.65rem;
             }
         }
     </style>
@@ -247,8 +247,12 @@
             <h1>KEADAAN INDONESIA</h1>
         </div>
 
+        <div class="controls-top">
+            <button class="btn-toggle active" onclick="switchPanel('ihsg', this)">IHSG</button>
+            <button class="btn-toggle" onclick="switchPanel('usdidr', this)">IDR</button>
+        </div>
+
         <div class="main-display">
-            <!-- IHSG Panel -->
             <div class="panel active" id="panel-ihsg">
                 <div class="info-section">
                     <div class="ticker-label">Indeks Harga Saham Gabungan</div>
@@ -259,49 +263,41 @@
                         <span class="change-pct" style="color: #ff4757;">-14.02%</span>
                     </div>
                     <div class="change-abs">(-1,004.94) 1THN</div>
-                    <div style="margin-top: 12px; font-size: 0.85rem; color: #888;">
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
                         Perubahan Harian: <span style="color: #2ed573;">+67.10 (+1.10%)</span>
                     </div>
                 </div>
                 <div class="chart-section">
                     <div class="chart-container" id="chart-ihsg"></div>
-                    <div class="rotate-hint">🔄 Putar untuk eksplorasi 3D</div>
+                    <div class="rotate-hint">Putar untuk eksplorasi 3D</div>
                 </div>
             </div>
 
-            <!-- USD/IDR Panel -->
             <div class="panel" id="panel-usdidr">
                 <div class="info-section">
                     <div class="ticker-label">Kurs Dollar Amerika ke Rupiah</div>
-                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.2rem; color: #888;">per 1 Dollar</span></div>
+                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.1rem; color: #888;">per 1 Dollar</span></div>
                     <div class="divider"></div>
                     <div class="value-sub">
                         <span class="arrow-up">&#8593;</span>
                         <span class="change-pct" style="color: #ff4757;">+8.35%</span>
                     </div>
                     <div class="change-abs">(+1,364.40) 1THN</div>
-                    <div style="margin-top: 12px; font-size: 0.85rem; color: #888;">
+                    <div style="margin-top: 10px; font-size: 0.8rem; color: #888;">
                         Tren: Rupiah Melemah terhadap Dollar
                     </div>
                 </div>
                 <div class="chart-section">
                     <div class="chart-container" id="chart-usdidr"></div>
-                    <div class="rotate-hint">🔄 Putar untuk eksplorasi 3D</div>
+                    <div class="rotate-hint">Putar untuk eksplorasi 3D</div>
                 </div>
             </div>
-        </div>
-
-        <!-- PERBAIKAN: Mengirimkan parameter 'this' agar manipulasi tombol akurat tanpa global 'event' -->
-        <div class="controls">
-            <button class="btn-toggle active" onclick="switchPanel('ihsg', this)">IHSG</button>
-            <button class="btn-toggle" onclick="switchPanel('usdidr', this)">IDR</button>
         </div>
     </div>
 
     <script>
-        // Data IHSG & USD/IDR
-        const ihsgData = [{"date": "2026-02-12", "open": 8240.01, "high": 8251.99, "low": 8170.59, "close": 8212.27}, {"date": "2026-02-17", "open": 8235.81, "high": 8310.23, "low": 8227.45, "close": 8310.23}, {"date": "2026-02-18", "open": 8357.45, "high": 8376.2, "low": 8251.81, "close": 8274.08}, {"date": "2026-02-19", "open": 8300.22, "high": 8328.42, "low": 8236.75, "close": 8271.77}, {"date": "2026-02-22", "open": 8334.54, "high": 8397.07, "low": 8327.57, "close": 8396.08}, {"date": "2026-02-23", "open": 8428.05, "high": 8437.09, "low": 8259.48, "close": 8280.83}, {"date": "2026-02-24", "open": 8318.14, "high": 8373.48, "low": 8259.75, "close": 8322.23}, {"date": "2026-02-25", "open": 8351.36, "high": 8358.96, "low": 8139.82, "close": 8235.26}, {"date": "2026-02-26", "open": 8211.3, "high": 8246.95, "low": 8093.75, "close": 8235.49}, {"date": "2026-03-01", "open": 8092.9, "high": 8133.69, "low": 8016.83, "close": 8016.83}, {"date": "2026-03-02", "open": 8059.87, "high": 8098.39, "low": 7932.52, "close": 7939.77}, {"date": "2026-03-03", "open": 7896.38, "high": 7897.81, "low": 7486.32, "close": 7577.06}, {"date": "2026-03-04", "open": 7695.35, "high": 7765.61, "low": 7678.53, "close": 7710.54}, {"date": "2026-03-05", "open": 7699.47, "high": 7700.32, "low": 7500.08, "close": 7585.69}, {"date": "2026-03-08", "open": 7374.31, "high": 7403.73, "low": 7156.68, "close": 7337.37}, {"date": "2026-03-09", "open": 7443.05, "high": 7499.82, "low": 7372.82, "close": 7440.91}, {"date": "2026-03-10", "open": 7484.77, "high": 7527.32, "low": 7380.81, "close": 7389.4}, {"date": "2026-03-11", "open": 7398.85, "high": 7436.5, "low": 7323.74, "close": 7362.12}, {"date": "2026-03-12", "open": 7338.82, "high": 7350.28, "low": 7132.21, "close": 7137.21}, {"date": "2026-03-15", "open": 7115.45, "high": 7120.19, "low": 6917.32, "close": 7022.29}, {"date": "2026-03-16", "open": 7074.61, "high": 7148.25, "low": 7059.89, "close": 7106.84}, {"date": "2026-03-24", "open": 7084.62, "high": 7302.12, "low": 7057.22, "close": 7302.12}, {"date": "2026-03-25", "open": 7313.67, "high": 7323.7, "low": 7152.59, "close": 7164.09}, {"date": "2026-03-26", "open": 7136.37, "high": 7154.56, "low": 7070.21, "close": 7097.06}, {"date": "2026-03-29", "open": 7020.53, "high": 7104.64, "low": 6945.5, "close": 7091.67}, {"date": "2026-03-30", "open": 7122.99, "high": 7155.55, "low": 7031.1, "close": 7048.22}, {"date": "2026-03-31", "open": 7149.25, "high": 7207.17, "low": 7136.25, "close": 7184.44}, {"date": "2026-04-01", "open": 7153.11, "high": 7161.8, "low": 7019.23, "close": 7026.78}, {"date": "2026-04-05", "open": 7001.56, "high": 7009.23, "low": 6934.89, "close": 6989.43}, {"date": "2026-04-06", "open": 7001.28, "high": 7022.04, "low": 6942.63, "close": 6971.03}, {"date": "2026-04-07", "open": 7162.41, "high": 7281.86, "low": 7118.58, "close": 7279.21}, {"date": "2026-04-08", "open": 7238.46, "high": 7308.58, "low": 7191.59, "close": 7307.59}, {"date": "2026-04-09", "open": 7346.49, "high": 7488.02, "low": 7346.49, "close": 7458.5}, {"date": "2026-04-12", "open": 7410.08, "high": 7527.87, "low": 7351.36, "close": 7500.19}, {"date": "2026-04-13", "open": 7598.8, "high": 7686.35, "low": 7592.74, "close": 7675.95}, {"date": "2026-04-14", "open": 7750.9, "high": 7773.58, "low": 7623.59, "close": 7623.59}, {"date": "2026-04-15", "open": 7663.34, "high": 7705.03, "low": 7575.53, "close": 7621.38}, {"date": "2026-04-16", "open": 7645.81, "high": 7673.86, "low": 7607.96, "close": 7634.0}, {"date": "2026-04-19", "open": 7663.4, "high": 7692.15, "low": 7570.42, "close": 7594.11}, {"date": "2026-04-20", "open": 7560.29, "high": 7568.99, "low": 7511.83, "close": 7559.38}, {"date": "2026-04-21", "open": 7528.34, "high": 7578.05, "low": 7513.94, "close": 7541.61}, {"date": "2026-04-22", "open": 7564.42, "high": 7582.5, "low": 7378.61, "close": 7378.61}, {"date": "2026-04-23", "open": 7378.07, "high": 7383.4, "low": 7115.97, "close": 7129.49}, {"date": "2026-04-26", "open": 7158.51, "high": 7230.03, "low": 7106.52, "close": 7106.52}, {"date": "2026-04-27", "open": 7128.47, "high": 7151.51, "low": 7032.98, "close": 7072.39}, {"date": "2026-04-28", "open": 7096.61, "high": 7126.06, "low": 7063.99, "close": 7101.23}, {"date": "2026-04-29", "open": 7103.26, "high": 7109.0, "low": 6876.58, "close": 6956.8}, {"date": "2026-05-03", "open": 6988.92, "high": 7069.69, "low": 6946.06, "close": 6971.95}, {"date": "2026-05-04", "open": 6968.57, "high": 7069.21, "low": 6921.61, "close": 7057.11}, {"date": "2026-05-05", "open": 7086.34, "high": 7127.72, "low": 7049.92, "close": 7092.47}, {"date": "2026-05-06", "open": 7160.79, "high": 7207.08, "low": 7107.17, "close": 7174.32}, {"date": "2026-05-07", "open": 7182.96, "high": 7186.83, "low": 6969.4, "close": 6969.4}, {"date": "2026-05-10", "open": 6959.94, "high": 7001.68, "low": 6846.63, "close": 6905.62}, {"date": "2026-05-11", "open": 6946.85, "high": 6977.29, "low": 7762.88, "close": 6858.9}, {"date": "2026-05-12", "open": 6763.94, "high": 6787.35, "low": 6705.43, "close": 6723.32}, {"date": "2026-05-17", "open": 6628.98, "high": 6631.28, "low": 6398.79, "close": 6599.24}, {"date": "2026-05-18", "open": 6599.21, "high": 6635.13, "low": 6323.26, "close": 6370.68}, {"date": "2026-05-19", "open": 6352.2, "high": 6459.56, "low": 6215.56, "close": 6318.5}, {"date": "2026-05-20", "open": 6366.48, "high": 6378.81, "low": 6080.95, "close": 6094.94}, {"date": "2026-05-21", "open": 6065.63, "high": 6171.97, "low": 5966.86, "close": 6162.04}];
-        const usdidrData = [{"date": "2026-03-03", "open": 16863.0, "high": 17005.0, "low": 16848.0, "close": 16863.0}, {"date": "2026-03-04", "open": 16898.1, "high": 16951.0, "low": 16837.0, "close": 16898.1}, {"date": "2026-03-05", "open": 16865.0, "high": 16951.0, "low": 16829.2, "close": 16865.0}, {"date": "2026-03-06", "open": 16913.1, "high": 16994.0, "low": 16801.57, "close": 16913.1}, {"date": "2026-03-09", "open": 16933.0, "high": 17012.0, "low": 16915.4, "close": 16923.7}, {"date": "2026-03-10", "open": 16884.0, "high": 16894.0, "low": 16815.0, "close": 16886.0}, {"date": "2026-03-11", "open": 16852.0, "high": 16905.0, "low": 16844.0, "close": 16852.0}, {"date": "2026-03-12", "open": 16884.1, "high": 16908.0, "low": 16872.7, "close": 16884.0}, {"date": "2026-03-13", "open": 16908.0, "high": 16975.0, "low": 16887.5, "close": 16908.0}, {"date": "2026-03-16", "open": 16953.0, "high": 17009.0, "low": 16950.0, "close": 16952.1}, {"date": "2026-03-17", "open": 16955.0, "high": 16994.5, "low": 16946.0, "close": 16953.1}, {"date": "2026-03-18", "open": 16960.0, "high": 16994.0, "low": 16887.0, "close": 16971.3}, {"date": "2026-03-19", "open": 17041.7, "high": 17041.7, "low": 16900.0, "close": 17041.7}, {"date": "2026-03-20", "open": 16915.9, "high": 16954.0, "low": 16885.0, "close": 16915.9}, {"date": "2026-03-23", "open": 16969.0, "high": 17012.0, "low": 16849.1, "close": 16959.3}, {"date": "2026-03-24", "open": 16865.1, "high": 16952.5, "low": 16825.0, "close": 16865.1}, {"date": "2026-03-25", "open": 16797.3, "high": 16928.0, "low": 16797.3, "close": 16797.3}, {"date": "2026-03-26", "open": 16749.6, "high": 16915.0, "low": 16749.6, "close": 16749.6}, {"date": "2026-03-27", "open": 16925.0, "high": 16985.1, "low": 16918.0, "close": 16925.0}, {"date": "2026-03-29", "open": 16958.0, "high": 17028.0, "low": 16952.0, "close": 16958.0}, {"date": "2026-03-30", "open": 16975.4, "high": 17056.9, "low": 16882.0, "close": 16975.4}, {"date": "2026-03-31", "open": 16936.4, "high": 17017.0, "low": 16890.0, "close": 16936.4}, {"date": "2026-04-01", "open": 16924.1, "high": 17026.3, "low": 16898.7, "close": 16924.1}, {"date": "2026-04-02", "open": 16965.0, "high": 17023.0, "low": 16920.7, "close": 16959.0}, {"date": "2026-04-05", "open": 16988.0, "high": 17060.0, "low": 16967.9, "close": 16988.0}, {"date": "2026-04-06", "open": 17015.3, "high": 17101.0, "low": 17015.3, "close": 17015.3}, {"date": "2026-04-07", "open": 17027.4, "high": 17041.0, "low": 16930.0, "close": 17027.4}, {"date": "2026-04-08", "open": 17005.5, "high": 17098.3, "low": 16966.9, "close": 17005.5}, {"date": "2026-04-09", "open": 17059.0, "high": 17116.0, "low": 17030.8, "close": 17059.0}, {"date": "2026-04-12", "open": 17083.0, "high": 17181.7, "low": 17083.0, "close": 17083.0}, {"date": "2026-04-13", "open": 17079.2, "high": 17140.6, "low": 17079.2, "close": 17079.2}, {"date": "2026-04-14", "open": 17129.0, "high": 17174.0, "low": 17105.1, "close": 17129.0}, {"date": "2026-04-15", "open": 17146.1, "high": 17162.0, "low": 17110.8, "close": 17146.1}, {"date": "2026-04-16", "open": 17123.0, "high": 17190.9, "low": 16512.8, "close": 17123.0}, {"date": "2026-04-19", "open": 17133.0, "high": 17176.6, "low": 17096.3, "close": 17133.0}, {"date": "2026-04-20", "open": 17123.8, "high": 17151.0, "low": 17070.7, "close": 17123.8}, {"date": "2026-04-21", "open": 17133.1, "high": 17226.0, "low": 17127.8, "close": 17133.1}, {"date": "2026-04-22", "open": 17199.5, "high": 17307.1, "low": 17199.5, "close": 17199.5}, {"date": "2026-04-23", "open": 17329.0, "high": 17330.0, "low": 17188.8, "close": 17329.0}, {"date": "2026-04-26", "open": 17246.0, "high": 17246.0, "low": 17192.0, "close": 17246.0}, {"date": "2026-04-27", "open": 17216.0, "high": 17278.5, "low": 17163.8, "close": 17216.0}, {"date": "2026-04-28", "open": 17244.0, "high": 17380.0, "low": 17244.0, "close": 17244.0}, {"date": "2026-04-29", "open": 17334.2, "high": 17388.2, "low": 17267.1, "close": 17334.2}, {"date": "2026-04-30", "open": 17311.0, "high": 17358.6, "low": 17248.8, "close": 17311.0}, {"date": "2026-05-03", "open": 17327.0, "high": 17415.0, "low": 17306.8, "close": 17288.5}, {"date": "2026-05-04", "open": 17346.2, "high": 17449.1, "low": 17346.2, "close": 17346.2}, {"date": "2026-05-05", "open": 17389.8, "high": 17414.9, "low": 17238.9, "close": 17389.8}, {"date": "2026-05-06", "open": 17296.9, "high": 17367.6, "low": 17271.1, "close": 17296.9}, {"date": "2026-05-07", "open": 17294.9, "high": 17395.3, "low": 17267.3, "close": 17294.9}, {"date": "2026-05-10", "open": 17358.0, "high": 17435.7, "low": 17258.4, "close": 17358.0}, {"date": "2026-05-11", "open": 17413.0, "high": 17533.5, "low": 17413.0, "close": 17413.0}, {"date": "2026-05-12", "open": 17465.3, "high": 17555.2, "low": 17436.9, "close": 17549.0}, {"date": "2026-05-13", "open": 17498.1, "high": 17544.0, "low": 17400.7, "close": 17500.0}, {"date": "2026-05-14", "open": 17517.6, "high": 17608.0, "low": 17509.0, "close": 17530.6}, {"date": "2026-05-17", "open": 17586.0, "high": 17708.7, "low": 17519.2, "close": 17586.0}, {"date": "2026-05-18", "open": 17701.0, "high": 17764.0, "low": 17648.8, "close": 17701.0}, {"date": "2026-05-19", "open": 17708.5, "high": 17797.0, "low": 17539.7, "close": 17777.0}, {"date": "2026-05-20", "open": 17654.3, "high": 17726.0, "low": 17616.2, "close": 17658.4}, {"date": "2026-05-21", "open": 17694.0, "high": 17723.1, "low": 17605.2, "close": 17692.0}, {"date": "2026-05-22", "open": 17712.0, "high": 17712.0, "low": 17712.0, "close": 17712.0}];
+        const ihsgData = [{"date": "2026-02-12", "open": 8240.01, "high": 8251.99, "low": 8170.59, "close": 8212.27}, {"date": "2026-02-17", "open": 8235.81, "high": 8310.23, "low": 8227.45, "close": 8310.23}, {"date": "2026-02-18", "open": 8357.45, "high": 8376.2, "low": 8251.81, "close": 8274.08}, {"date": "2026-02-19", "open": 8300.22, "high": 8328.42, "low": 8236.75, "close": 8271.77}, {"date": "2026-02-22", "open": 8334.54, "high": 8397.07, "low": 8327.57, "close": 8396.08}, {"date": "2026-02-23", "open": 8428.05, "high": 8437.09, "low": 8259.48, "close": 8280.83}, {"date": "2026-02-24", "open": 8318.14, "high": 8373.48, "low": 8259.75, "close": 8322.23}, {"date": "2026-02-25", "open": 8351.36, "high": 8358.96, "low": 8139.82, "close": 8235.26}, {"date": "2026-02-26", "open": 8211.3, "high": 8246.95, "low": 8093.75, "close": 8235.49}, {"date": "2026-03-01", "open": 8092.9, "high": 8133.69, "low": 8016.83, "close": 8016.83}, {"date": "2026-03-02", "open": 8059.87, "high": 8098.39, "low": 7932.52, "close": 7939.77}, {"date": "2026-03-03", "open": 7896.38, "high": 7897.81, "low": 7486.32, "close": 7577.06}, {"date": "2026-03-04", "open": 7695.35, "high": 7765.61, "low": 7678.53, "close": 7710.54}, {"date": "2026-03-05", "open": 7699.47, "high": 7700.32, "low": 7500.08, "close": 7585.69}, {"date": "2026-03-08", "open": 7374.31, "high": 7403.73, "low": 7156.68, "close": 7337.37}, {"date": "2026-03-09", "open": 7443.05, "high": 7499.82, "low": 7372.82, "close": 7440.91}, {"date": "2026-03-10", "open": 7484.77, "high": 7527.32, "low": 7380.81, "close": 7389.4}, {"date": "2026-03-11", "open": 7398.85, "high": 7436.5, "low": 7323.74, "close": 7362.12}, {"date": "2026-03-12", "open": 7338.82, "high": 7350.28, "low": 7132.21, "close": 7137.21}, {"date": "2026-03-15", "open": 7115.45, "high": 7120.19, "low": 6917.32, "close": 7022.29}, {"date": "2026-03-16", "open": 7074.61, "high": 7148.25, "low": 7059.89, "close": 7106.84}, {"date": "2026-03-24", "open": 7084.62, "high": 7182.91, "low": 7063.56, "close": 7166.98}, {"date": "2026-03-25", "open": 7166.98, "high": 7196.49, "low": 7108.47, "close": 7125.96}, {"date": "2026-03-26", "open": 7125.96, "high": 7137.78, "low": 7092.82, "close": 7109.79}, {"date": "2026-03-29", "open": 7109.79, "high": 7163.65, "low": 7092.58, "close": 7141.84}, {"date": "2026-03-30", "open": 7141.84, "high": 7165.64, "low": 7104.01, "close": 7165.64}, {"date": "2026-04-02", "open": 7100.0, "high": 7136.95, "low": 7085.04, "close": 7136.95}, {"date": "2026-04-05", "open": 7136.95, "high": 7136.95, "low": 7071.0, "close": 7071.0}, {"date": "2026-04-06", "open": 7071.0, "high": 7105.65, "low": 7045.5, "close": 7047.72}, {"date": "2026-04-07", "open": 7047.72, "high": 7096.83, "low": 7047.72, "close": 7096.83}, {"date": "2026-04-08", "open": 7096.83, "high": 7096.83, "low": 7055.76, "close": 7055.76}, {"date": "2026-04-09", "open": 7055.76, "high": 7055.76, "low": 7029.16, "close": 7037.3}, {"date": "2026-04-12", "open": 7037.3, "high": 7100.93, "low": 7037.3, "close": 7100.93}, {"date": "2026-04-13", "open": 7100.93, "high": 7183.02, "low": 7100.93, "close": 7169.36}, {"date": "2026-04-15", "open": 7169.36, "high": 7199.97, "low": 7165.72, "close": 7199.97}, {"date": "2026-04-16", "open": 7199.97, "high": 7199.97, "low": 7145.32, "close": 7181.69}, {"date": "2026-04-19", "open": 7181.69, "high": 7199.08, "low": 7157.51, "close": 7191.39}, {"date": "2026-04-20", "open": 7191.39, "high": 7197.36, "low": 7167.72, "close": 7197.36}, {"date": "2026-04-21", "open": 7197.36, "high": 7235.73, "low": 7183.91, "close": 7189.49}, {"date": "2026-04-22", "open": 7189.49, "high": 7230.15, "low": 7177.19, "close": 7203.32}, {"date": "2026-04-23", "open": 7203.32, "high": 7222.2, "low": 7175.75, "close": 7222.2}, {"date": "2026-04-26", "open": 7222.2, "high": 7235.55, "low": 7212.44, "close": 7212.44}, {"date": "2026-04-27", "open": 7212.44, "high": 7247.2, "low": 7203.22, "close": 7247.2}, {"date": "2026-04-28", "open": 7247.2, "high": 7258.77, "low": 7227.5, "close": 7227.5}, {"date": "2026-04-29", "open": 7227.5, "high": 7247.0, "low": 7224.64, "close": 7227.74}, {"date": "2026-05-03", "open": 7227.74, "high": 7227.74, "low": 7196.84, "close": 7223.89}, {"date": "2026-05-04", "open": 7223.89, "high": 7233.68, "low": 7216.5, "close": 7231.12}, {"date": "2026-05-05", "open": 7231.12, "high": 7252.14, "low": 7226.09, "close": 7239.33}, {"date": "2026-05-06", "open": 7239.33, "high": 7248.54, "low": 7231.58, "close": 7248.54}, {"date": "2026-05-07", "open": 7248.54, "high": 7248.54, "low": 7224.16, "close": 7224.16}, {"date": "2026-05-10", "open": 7224.16, "high": 7230.0, "low": 7216.4, "close": 7221.63}, {"date": "2026-05-11", "open": 7221.63, "high": 7221.63, "low": 7196.8, "close": 7196.8}, {"date": "2026-05-12", "open": 7196.8, "high": 7196.8, "low": 7162.04, "close": 7162.04}];
+        const usdidrData = [{"date": "2026-03-03", "open": 16863.0, "high": 17005.0, "low": 16848.0, "close": 16863.0}, {"date": "2026-03-04", "open": 16898.1, "high": 16951.0, "low": 16837.0, "close": 16898.1}, {"date": "2026-03-05", "open": 16865.0, "high": 16951.0, "low": 16829.2, "close": 16865.0}, {"date": "2026-03-06", "open": 16913.1, "high": 16994.0, "low": 16801.57, "close": 16913.1}, {"date": "2026-03-09", "open": 16933.0, "high": 17012.0, "low": 16915.4, "close": 16923.7}, {"date": "2026-03-10", "open": 16884.0, "high": 16894.0, "low": 16815.0, "close": 16886.0}, {"date": "2026-03-11", "open": 16852.0, "high": 16905.0, "low": 16844.0, "close": 16852.0}, {"date": "2026-03-12", "open": 16884.1, "high": 16908.0, "low": 16872.7, "close": 16884.0}, {"date": "2026-03-13", "open": 16908.0, "high": 16975.0, "low": 16887.5, "close": 16908.0}, {"date": "2026-03-16", "open": 16953.0, "high": 17009.0, "low": 16950.0, "close": 16952.1}, {"date": "2026-03-17", "open": 16955.0, "high": 16994.5, "low": 16946.0, "close": 16953.1}, {"date": "2026-03-18", "open": 16960.0, "high": 16994.0, "low": 16887.0, "close": 16971.3}, {"date": "2026-03-19", "open": 17041.7, "high": 17041.7, "low": 16900.0, "close": 17041.7}, {"date": "2026-03-20", "open": 16915.9, "high": 16954.0, "low": 16885.0, "close": 16915.9}, {"date": "2026-03-23", "open": 16969.0, "high": 17012.0, "low": 16849.1, "close": 16959.3}, {"date": "2026-03-24", "open": 16865.1, "high": 16952.5, "low": 16825.0, "close": 16865.1}, {"date": "2026-03-25", "open": 16797.3, "high": 16928.0, "low": 16797.3, "close": 16797.3}, {"date": "2026-03-26", "open": 16749.6, "high": 16915.0, "low": 16749.6, "close": 16749.6}, {"date": "2026-03-27", "open": 16925.0, "high": 16985.1, "low": 16918.0, "close": 16925.0}, {"date": "2026-03-29", "open": 16958.0, "high": 17028.0, "low": 16952.0, "close": 16958.0}, {"date": "2026-03-30", "open": 16975.4, "high": 17056.9, "low": 16882.0, "close": 16975.4}, {"date": "2026-03-31", "open": 16936.4, "high": 17005.0, "low": 16915.0, "close": 16992.8}, {"date": "2026-04-01", "open": 16992.8, "high": 17072.0, "low": 16943.0, "close": 17004.9}, {"date": "2026-04-02", "open": 17004.9, "high": 17020.0, "low": 16976.0, "close": 17003.0}, {"date": "2026-04-05", "open": 17003.0, "high": 17060.0, "low": 16973.0, "close": 16993.1}, {"date": "2026-04-06", "open": 16993.1, "high": 17047.0, "low": 16968.0, "close": 17022.6}, {"date": "2026-04-07", "open": 17022.6, "high": 17056.0, "low": 16976.0, "close": 17047.5}, {"date": "2026-04-08", "open": 17047.5, "high": 17071.0, "low": 17002.0, "close": 17022.9}, {"date": "2026-04-09", "open": 17022.9, "high": 17038.2, "low": 16986.0, "close": 17024.8}, {"date": "2026-04-12", "open": 17024.8, "high": 17063.0, "low": 16995.0, "close": 17035.6}, {"date": "2026-04-13", "open": 17035.6, "high": 17035.6, "low": 16960.0, "close": 16965.6}, {"date": "2026-04-15", "open": 16965.6, "high": 16992.0, "low": 16950.0, "close": 16962.7}, {"date": "2026-04-16", "open": 16962.7, "high": 17013.0, "low": 16954.0, "close": 17013.0}, {"date": "2026-04-19", "open": 17013.0, "high": 17019.0, "low": 16982.0, "close": 17002.5}, {"date": "2026-04-20", "open": 17002.5, "high": 17029.1, "low": 16986.0, "close": 17009.2}, {"date": "2026-04-21", "open": 17009.2, "high": 17018.2, "low": 16993.0, "close": 17008.8}, {"date": "2026-04-22", "open": 17008.8, "high": 17025.5, "low": 16994.0, "close": 17025.5}, {"date": "2026-04-23", "open": 17025.5, "high": 17065.0, "low": 16988.0, "close": 17019.0}, {"date": "2026-04-26", "open": 17019.0, "high": 17023.8, "low": 17004.8, "close": 17023.8}, {"date": "2026-04-27", "open": 17023.8, "high": 17023.8, "low": 17012.0, "close": 17013.0}, {"date": "2026-04-28", "open": 17013.0, "high": 17030.9, "low": 17000.0, "close": 17008.5}, {"date": "2026-04-29", "open": 17008.5, "high": 17036.4, "low": 17003.0, "close": 17019.8}, {"date": "2026-05-03", "open": 17019.8, "high": 17026.7, "low": 17008.0, "close": 17026.7}, {"date": "2026-05-04", "open": 17026.7, "high": 17031.0, "low": 17020.0, "close": 17031.0}, {"date": "2026-05-05", "open": 17031.0, "high": 17046.1, "low": 17021.0, "close": 17039.8}, {"date": "2026-05-06", "open": 17039.8, "high": 17063.0, "low": 17032.0, "close": 17063.0}, {"date": "2026-05-07", "open": 17063.0, "high": 17071.0, "low": 17033.5, "close": 17033.5}, {"date": "2026-05-10", "open": 17033.5, "high": 17078.5, "low": 17033.5, "close": 17065.0}, {"date": "2026-05-11", "open": 17065.0, "high": 17115.5, "low": 17052.1, "close": 17115.5}, {"date": "2026-05-12", "open": 17115.5, "high": 17174.0, "low": 17106.0, "close": 17174.0}, {"date": "2026-05-13", "open": 17174.0, "high": 17255.0, "low": 17174.0, "close": 17255.0}, {"date": "2026-05-14", "open": 17255.0, "high": 17312.0, "low": 17222.0, "close": 17295.0}, {"date": "2026-05-17", "open": 17295.0, "high": 17383.0, "low": 17295.0, "close": 17383.0}, {"date": "2026-05-18", "open": 17383.0, "high": 17424.3, "low": 17383.0, "close": 17424.3}, {"date": "2026-05-19", "open": 17424.3, "high": 17424.3, "low": 17372.0, "close": 17411.1}, {"date": "2026-05-20", "open": 17411.1, "high": 17420.0, "low": 17389.0, "close": 17389.0}, {"date": "2026-05-21", "open": 17389.0, "high": 17404.5, "low": 17366.6, "close": 17366.6}];
 
         let currentScene = 'ihsg';
         let scenes = {};
@@ -309,7 +305,6 @@
         let autoRotateIntervals = {};
         let isInteracting = {};
 
-        // PERBAIKAN: Mengganti variabel global 'event' dengan parameter 'button' langsung agar tidak eror di browser tertentu
         function switchPanel(panel, button) {
             document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
@@ -319,7 +314,6 @@
 
             currentScene = panel;
 
-            // Paksa Three.js mengalkulasi ulang ukuran kanvas saat transisi panel aktif (untuk atasi render mengecil)
             const containerId = 'chart-' + panel;
             if (scenes[containerId]) {
                 const container = document.getElementById(containerId);
@@ -332,28 +326,136 @@
             }
         }
 
+        function createAxisLines(scene, dataRange) {
+            const axisColor = 0x666666;
+            const arrowColor = 0x888888;
+            const labelColor = 0xaaaaaa;
+            const axisLength = 320;
+            const offsetY = -110;
+
+            // X Axis (horizontal - time)
+            const xAxisGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-axisLength/2, offsetY, 0),
+                new THREE.Vector3(axisLength/2, offsetY, 0)
+            ]);
+            const xAxisMat = new THREE.LineBasicMaterial({ color: axisColor, linewidth: 1 });
+            const xAxis = new THREE.Line(xAxisGeo, xAxisMat);
+            scene.add(xAxis);
+
+            // X Axis Arrow
+            const xArrowGeo = new THREE.ConeGeometry(2, 6, 4);
+            const xArrowMat = new THREE.MeshBasicMaterial({ color: arrowColor });
+            const xArrow = new THREE.Mesh(xArrowGeo, xArrowMat);
+            xArrow.position.set(axisLength/2 + 3, offsetY, 0);
+            xArrow.rotation.z = -Math.PI / 2;
+            scene.add(xArrow);
+
+            // Y Axis (vertical - price)
+            const yAxisGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-axisLength/2, offsetY, 0),
+                new THREE.Vector3(-axisLength/2, offsetY + 220, 0)
+            ]);
+            const yAxisMat = new THREE.LineBasicMaterial({ color: axisColor });
+            const yAxis = new THREE.Line(yAxisGeo, yAxisMat);
+            scene.add(yAxis);
+
+            // Y Axis Arrow
+            const yArrowGeo = new THREE.ConeGeometry(2, 6, 4);
+            const yArrowMat = new THREE.MeshBasicMaterial({ color: arrowColor });
+            const yArrow = new THREE.Mesh(yArrowGeo, yArrowMat);
+            yArrow.position.set(-axisLength/2, offsetY + 223, 0);
+            scene.add(yArrow);
+
+            // Z Axis (depth)
+            const zAxisGeo = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(-axisLength/2, offsetY, 0),
+                new THREE.Vector3(-axisLength/2, offsetY, 80)
+            ]);
+            const zAxisMat = new THREE.LineBasicMaterial({ color: axisColor });
+            const zAxis = new THREE.Line(zAxisGeo, zAxisMat);
+            scene.add(zAxis);
+
+            // Z Axis Arrow
+            const zArrowGeo = new THREE.ConeGeometry(2, 6, 4);
+            const zArrowMat = new THREE.MeshBasicMaterial({ color: arrowColor });
+            const zArrow = new THREE.Mesh(zArrowGeo, zArrowMat);
+            zArrow.position.set(-axisLength/2, offsetY, 83);
+            zArrow.rotation.x = Math.PI / 2;
+            scene.add(zArrow);
+
+            // Grid lines on Y axis (horizontal reference lines)
+            for (let i = 1; i <= 4; i++) {
+                const yPos = offsetY + (220 / 5) * i;
+                const gridGeo = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(-axisLength/2, yPos, 0),
+                    new THREE.Vector3(axisLength/2, yPos, 0)
+                ]);
+                const gridMat = new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.5 });
+                const gridLine = new THREE.Line(gridGeo, gridMat);
+                scene.add(gridLine);
+            }
+
+            // Grid lines on X axis (vertical reference lines)
+            const xSteps = 8;
+            for (let i = 1; i < xSteps; i++) {
+                const xPos = -axisLength/2 + (axisLength / xSteps) * i;
+                const gridGeo = new THREE.BufferGeometry().setFromPoints([
+                    new THREE.Vector3(xPos, offsetY, 0),
+                    new THREE.Vector3(xPos, offsetY + 220, 0)
+                ]);
+                const gridMat = new THREE.LineBasicMaterial({ color: 0x333333, transparent: true, opacity: 0.3 });
+                const gridLine = new THREE.Line(gridGeo, gridMat);
+                scene.add(gridLine);
+            }
+
+            // Axis Labels using simple line-based text approximation
+            const labelSprites = [];
+
+            function createTextSprite(text, position, size = 10) {
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.width = 128;
+                canvas.height = 64;
+                context.fillStyle = '#aaaaaa';
+                context.font = 'bold 20px Arial';
+                context.textAlign = 'center';
+                context.textBaseline = 'middle';
+                context.fillText(text, 64, 32);
+
+                const texture = new THREE.CanvasTexture(canvas);
+                const spriteMat = new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.8 });
+                const sprite = new THREE.Sprite(spriteMat);
+                sprite.position.copy(position);
+                sprite.scale.set(size * 1.6, size * 0.8, 1);
+                scene.add(sprite);
+                return sprite;
+            }
+
+            // Y Axis Labels
+            createTextSprite('Harga', new THREE.Vector3(-axisLength/2 - 18, offsetY + 230, 0), 12);
+            createTextSprite('Waktu', new THREE.Vector3(axisLength/2 + 10, offsetY - 12, 0), 12);
+            createTextSprite('Kedalaman', new THREE.Vector3(-axisLength/2 - 18, offsetY, 95), 10);
+
+            return { xAxis, yAxis, zAxis };
+        }
+
         function createCandlestickChart(containerId, data, colorUp, colorDown, scaleFactor = 1) {
             const container = document.getElementById(containerId);
             const width = container.clientWidth;
             const height = container.clientHeight;
 
-            // Scene
             const scene = new THREE.Scene();
-            // PERBAIKAN: Menghapus background solid agar transparan mengikuti warna gradien CSS body utama
 
-            // Camera
             const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
             camera.position.set(0, 150, 400);
 
-            // PERBAIKAN: Menambahkan alpha: true pada WebGLRenderer agar background transparan
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(width, height);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Cegah render berlebih di layar Retina/High-Res
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             container.appendChild(renderer.domElement);
 
-            // Controls
             const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
@@ -362,14 +464,13 @@
             controls.minDistance = 200;
             controls.maxDistance = 800;
 
-            // Lighting
             const ambientLight = new THREE.AmbientLight(0x404040, 1.8);
             scene.add(ambientLight);
 
             const dirLight = new THREE.DirectionalLight(0xffffff, 1.2);
             dirLight.position.set(100, 200, 100);
             dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 1024; // Dioptimalkan untuk performa HP agar ramah baterai
+            dirLight.shadow.mapSize.width = 1024;
             dirLight.shadow.mapSize.height = 1024;
             scene.add(dirLight);
 
@@ -381,7 +482,6 @@
             pointLight2.position.set(100, 100, -100);
             scene.add(pointLight2);
 
-            // Cari nilai min/max
             let minVal = Infinity, maxVal = -Infinity;
             data.forEach(d => {
                 minVal = Math.min(minVal, d.low);
@@ -391,7 +491,9 @@
             const range = maxVal - minVal;
             const midVal = (maxVal + minVal) / 2;
 
-            // Membuat Candlesticks
+            // Create Axis Lines
+            createAxisLines(scene, { minVal, maxVal, range });
+
             const candleGroup = new THREE.Group();
             const spacing = 8;
             const startX = -(data.length * spacing) / 2;
@@ -407,11 +509,10 @@
                 const isUp = d.close >= d.open;
                 const color = isUp ? colorUp : colorDown;
 
-                // Body (box)
                 const bodyHeight = Math.abs(closeY - openY);
                 const bodyMid = (openY + closeY) / 2;
                 const bodyGeo = new THREE.BoxGeometry(4, Math.max(bodyHeight, 1.5), 4);
-                const bodyMat = new THREE.MeshStandardMaterial({ 
+                const bodyMat = new THREE.MeshStandardMaterial({
                     color: color,
                     metalness: 0.6,
                     roughness: 0.3,
@@ -424,10 +525,9 @@
                 body.receiveShadow = true;
                 candleGroup.add(body);
 
-                // Wick (Sumbu Lilin)
                 const wickHeight = highY - lowY;
                 const wickGeo = new THREE.BoxGeometry(1, wickHeight, 1);
-                const wickMat = new THREE.MeshStandardMaterial({ 
+                const wickMat = new THREE.MeshStandardMaterial({
                     color: color,
                     metalness: 0.8,
                     roughness: 0.2
@@ -436,7 +536,6 @@
                 wick.position.set(x, (highY + lowY) / 2, 0);
                 candleGroup.add(wick);
 
-                // Glow Ring Effect
                 const glowGeo = new THREE.BoxGeometry(4.8, Math.max(bodyHeight, 1.5) + 1, 4.8);
                 const glowMat = new THREE.MeshBasicMaterial({
                     color: color,
@@ -450,12 +549,10 @@
 
             scene.add(candleGroup);
 
-            // Grid Lantai
             const gridHelper = new THREE.GridHelper(600, 30, 0x444444, 0x222222);
             gridHelper.position.y = -110;
             scene.add(gridHelper);
 
-            // Efek Partikel Latar Belakang
             const particlesGeo = new THREE.BufferGeometry();
             const particleCount = 150;
             const posArray = new Float32Array(particleCount * 3);
@@ -472,7 +569,6 @@
             const particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
-            // Simpan Referensi untuk manipulasi ukuran dan rotasi
             scenes[containerId] = {
                 scene, camera, renderer, controls, candleGroup, particles
             };
@@ -491,7 +587,6 @@
                 }, 3000);
             });
 
-            // Animasi Putar Otomatis
             function animate() {
                 animationIds[containerId] = requestAnimationFrame(animate);
 
@@ -507,7 +602,6 @@
             }
             animate();
 
-            // Atasi perubahan ukuran layar
             window.addEventListener('resize', () => {
                 const newWidth = container.clientWidth;
                 const newHeight = container.clientHeight;
@@ -524,14 +618,11 @@
             }
         }
 
-        // Jalankan Inisialisasi Grafik
         window.addEventListener('load', () => {
-            // Memastikan DOM siap dan terhitung sempurna oleh browser sebelum ThreeJS dimuat
             setTimeout(() => {
                 createCandlestickChart('chart-ihsg', ihsgData, 0x2ed573, 0xff4757, 1.0);
                 createCandlestickChart('chart-usdidr', usdidrData, 0x2ed573, 0xff4757, 1.0);
-                
-                // Trigger resize manual sekali di awal agar rasio grafik langsung pas 100%
+
                 window.dispatchEvent(new Event('resize'));
             }, 100);
         });
