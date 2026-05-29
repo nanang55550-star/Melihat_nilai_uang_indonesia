@@ -1,489 +1,474 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keadaan Indonesia - IHSG & USD/IDR Real-Time</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-            color: #ffffff;
-            overflow: hidden;
-            height: 100vh;
-            width: 100vw;
-        }
-        .container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            z-index: 10;
-        }
-        .header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
-        }
-        .main-display {
-            flex: 1;
-            display: flex;
-            position: relative;
-            overflow: hidden;
-        }
-        .panel {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            transition: opacity 0.6s ease, transform 0.6s ease;
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none;
-        }
-        .panel.active {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: all;
-        }
-        .info-section {
-            width: 40%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 40px;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(5px);
-        }
-        .chart-section {
-            width: 60%;
-            position: relative;
-        }
-        .chart-container {
-            width: 100%;
-            height: 100%;
-        }
-        .ticker-label {
-            font-size: 0.9rem;
-            color: #888;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-        }
-        .value-main {
-            font-size: 4rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 15px;
-        }
-        .value-sub {
-            font-size: 1.8rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        .arrow-down {
-            color: #ff4757;
-        }
-        .arrow-up {
-            color: #2ed573;
-        }
-        .change-pct {
-            font-size: 2.2rem;
-            font-weight: 700;
-        }
-        .change-abs {
-            font-size: 1.4rem;
-            color: #aaa;
-        }
-        .timeframe {
-            font-size: 1.1rem;
-            color: #666;
-            letter-spacing: 2px;
-        }
-        .divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
-            margin: 20px 0;
-            border-radius: 2px;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 25px;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border-top: 2px solid rgba(255, 255, 255, 0.1);
-            z-index: 10;
-        }
-        .btn-toggle {
-            padding: 15px 50px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        .btn-toggle:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-        .btn-toggle.active {
-            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
-            border-color: transparent;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
-        }
-        .rotate-hint {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.4);
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 15px;
-            border-radius: 20px;
-            pointer-events: none;
-            z-index: 5;
-        }
-        .loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 1.2rem;
-            color: #00d4ff;
-            z-index: 100;
-        }
-        @media (max-width: 900px) {
-            .panel { flex-direction: column; }
-            .info-section { width: 100%; padding: 20px; }
-            .chart-section { width: 100%; height: 50%; }
-            .value-main { font-size: 2.5rem; }
-            .header h1 { font-size: 1.5rem; letter-spacing: 4px; }
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keadaan Indonesia - IHSG & USD/IDR Real-Time</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 10;
+        }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        .main-display {
+            flex: 1;
+            display: flex;
+            position: relative;
+            overflow: hidden;
+        }
+        .panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+        .panel.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: all;
+        }
+        .info-section {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+        .chart-section {
+            width: 60%;
+            position: relative;
+        }
+        .chart-container {
+            width: 100%;
+            height: 100%;
+        }
+        .ticker-label {
+            font-size: 0.9rem;
+            color: #888;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .value-main {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+        .value-sub {
+            font-size: 1.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        .arrow-down {
+            color: #ff4757;
+        }
+        .arrow-up {
+            color: #2ed573;
+        }
+        .change-pct {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+        .change-abs {
+            font-size: 1.4rem;
+            color: #aaa;
+        }
+        .timeframe {
+            font-size: 1.1rem;
+            color: #666;
+            letter-spacing: 2px;
+        }
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            margin: 20px 0;
+            border-radius: 2px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+            z-index: 10;
+        }
+        .btn-toggle {
+            padding: 15px 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .btn-toggle:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        .btn-toggle.active {
+            background: linear-gradient(135deg, #00d4ff, #7b2cbf);
+            border-color: transparent;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+        }
+        .rotate-hint {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 15px;
+            border-radius: 20px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        /* PERBAIKAN: Layout responsif HP agar tidak ambles/terpotong */
+        @media (max-width: 900px) {
+            .main-display { overflow-y: auto; }
+            .panel { flex-direction: column; position: relative; height: auto; }
+            .info-section { width: 100%; padding: 25px; }
+            .chart-section { width: 100%; height: 380px; flex-shrink: 0; } /* Tinggi grafik dikunci agar pas */
+            .value-main { font-size: 2.5rem; }
+            .header h1 { font-size: 1.5rem; letter-spacing: 4px; }
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>KEADAAN INDONESIA</h1>
-        </div>
+    <div class="container">
+        <div class="header">
+            <h1>KEADAAN INDONESIA</h1>
+        </div>
 
-        <div class="main-display">
-            <!-- IHSG Panel -->
-            <div class="panel active" id="panel-ihsg">
-                <div class="info-section">
-                    <div class="ticker-label">Indeks Harga Saham Gabungan</div>
-                    <div class="value-main">IHSG [ID<br>6,162.04</div>
-                    <div class="divider"></div>
-                    <div class="value-sub">
-                        <span class="arrow-down">&#8595;</span>
-                        <span class="change-pct" style="color: #ff4757;">-14.02%</span>
-                    </div>
-                    <div class="change-abs">(-1,004.94) 1THN</div>
-                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
-                        Perubahan Harian: <span style="color: #2ed573;">+67.10 (+1.10%)</span>
-                    </div>
-                </div>
-                <div class="chart-section">
-                    <div class="chart-container" id="chart-ihsg"></div>
-                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
-                </div>
-            </div>
+        <div class="main-display">
+            <div class="panel active" id="panel-ihsg">
+                <div class="info-section">
+                    <div class="ticker-label">Indeks Harga Saham Gabungan</div>
+                    <div class="value-main">IHSG<br>6,162.04</div>
+                    <div class="divider"></div>
+                    <div class="value-sub">
+                        <span class="arrow-down">&#8595;</span>
+                        <span class="change-pct" style="color: #ff4757;">-14.02%</span>
+                    </div>
+                    <div class="change-abs">(-1,004.94) 1THN</div>
+                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                        Perubahan Harian: <span style="color: #2ed573;">+67.10 (+1.10%)</span>
+                    </div>
+                </div>
+                <div class="chart-section">
+                    <div class="chart-container" id="chart-ihsg"></div>
+                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
+                </div>
+            </div>
 
-            <!-- USD/IDR Panel -->
-            <div class="panel" id="panel-usdidr">
-                <div class="info-section">
-                    <div class="ticker-label">Kurs Dollar Amerika ke Rupiah</div>
-                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.5rem; color: #888;">per 1 Dollar</span></div>
-                    <div class="divider"></div>
-                    <div class="value-sub">
-                        <span class="arrow-up">&#8593;</span>
-                        <span class="change-pct" style="color: #ff4757;">+8.35%</span>
-                    </div>
-                    <div class="change-abs">(+1,364.40) 1THN</div>
-                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
-                        Tren: Rupiah Melemah terhadap Dollar
-                    </div>
-                </div>
-                <div class="chart-section">
-                    <div class="chart-container" id="chart-usdidr"></div>
-                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
-                </div>
-            </div>
-        </div>
+            <div class="panel" id="panel-usdidr">
+                <div class="info-section">
+                    <div class="ticker-label">Kurs Dollar Amerika ke Rupiah</div>
+                    <div class="value-main">Rp17,712.00<br><span style="font-size: 1.5rem; color: #888;">per 1 Dollar</span></div>
+                    <div class="divider"></div>
+                    <div class="value-sub">
+                        <span class="arrow-up">&#8593;</span>
+                        <span class="change-pct" style="color: #ff4757;">+8.35%</span>
+                    </div>
+                    <div class="change-abs">(+1,364.40) 1THN</div>
+                    <div style="margin-top: 20px; font-size: 0.9rem; color: #888;">
+                        Tren: Rupiah Melemah terhadap Dollar
+                    </div>
+                </div>
+                <div class="chart-section">
+                    <div class="chart-container" id="chart-usdidr"></div>
+                    <div class="rotate-hint">&#128260; Putar untuk eksplorasi 3D</div>
+                </div>
+            </div>
+        </div>
 
-        <div class="controls">
-            <button class="btn-toggle active" onclick="switchPanel('ihsg')">IHSG</button>
-            <button class="btn-toggle" onclick="switchPanel('usdidr')">IDR</button>
-        </div>
-    </div>
+        <div class="controls">
+            <button class="btn-toggle active" onclick="switchPanel('ihsg', this)">IHSG</button>
+            <button class="btn-toggle" onclick="switchPanel('usdidr', this)">IDR</button>
+        </div>
+    </div>
 
-    <script>
-        // Data IHSG
-        const ihsgData = [{"date": "2026-02-12", "open": 8240.01, "high": 8251.99, "low": 8170.59, "close": 8212.27}, {"date": "2026-02-17", "open": 8235.81, "high": 8310.23, "low": 8227.45, "close": 8310.23}, {"date": "2026-02-18", "open": 8357.45, "high": 8376.2, "low": 8251.81, "close": 8274.08}, {"date": "2026-02-19", "open": 8300.22, "high": 8328.42, "low": 8236.75, "close": 8271.77}, {"date": "2026-02-22", "open": 8334.54, "high": 8397.07, "low": 8327.57, "close": 8396.08}, {"date": "2026-02-23", "open": 8428.05, "high": 8437.09, "low": 8259.48, "close": 8280.83}, {"date": "2026-02-24", "open": 8318.14, "high": 8373.48, "low": 8259.75, "close": 8322.23}, {"date": "2026-02-25", "open": 8351.36, "high": 8358.96, "low": 8139.82, "close": 8235.26}, {"date": "2026-02-26", "open": 8211.3, "high": 8246.95, "low": 8093.75, "close": 8235.49}, {"date": "2026-03-01", "open": 8092.9, "high": 8133.69, "low": 8016.83, "close": 8016.83}, {"date": "2026-03-02", "open": 8059.87, "high": 8098.39, "low": 7932.52, "close": 7939.77}, {"date": "2026-03-03", "open": 7896.38, "high": 7897.81, "low": 7486.32, "close": 7577.06}, {"date": "2026-03-04", "open": 7695.35, "high": 7765.61, "low": 7678.53, "close": 7710.54}, {"date": "2026-03-05", "open": 7699.47, "high": 7700.32, "low": 7500.08, "close": 7585.69}, {"date": "2026-03-08", "open": 7374.31, "high": 7403.73, "low": 7156.68, "close": 7337.37}, {"date": "2026-03-09", "open": 7443.05, "high": 7499.82, "low": 7372.82, "close": 7440.91}, {"date": "2026-03-10", "open": 7484.77, "high": 7527.32, "low": 7380.81, "close": 7389.4}, {"date": "2026-03-11", "open": 7398.85, "high": 7436.5, "low": 7323.74, "close": 7362.12}, {"date": "2026-03-12", "open": 7338.82, "high": 7350.28, "low": 7132.21, "close": 7137.21}, {"date": "2026-03-15", "open": 7115.45, "high": 7120.19, "low": 6917.32, "close": 7022.29}, {"date": "2026-03-16", "open": 7074.61, "high": 7148.25, "low": 7059.89, "close": 7106.84}, {"date": "2026-03-24", "open": 7084.62, "high": 7302.12, "low": 7057.22, "close": 7302.12}, {"date": "2026-03-25", "open": 7313.67, "high": 7323.7, "low": 7152.59, "close": 7164.09}, {"date": "2026-03-26", "open": 7136.37, "high": 7154.56, "low": 7070.21, "close": 7097.06}, {"date": "2026-03-29", "open": 7020.53, "high": 7104.64, "low": 6945.5, "close": 7091.67}, {"date": "2026-03-30", "open": 7122.99, "high": 7155.55, "low": 7031.1, "close": 7048.22}, {"date": "2026-03-31", "open": 7149.25, "high": 7207.17, "low": 7136.25, "close": 7184.44}, {"date": "2026-04-01", "open": 7153.11, "high": 7161.8, "low": 7019.23, "close": 7026.78}, {"date": "2026-04-05", "open": 7001.56, "high": 7009.23, "low": 6934.89, "close": 6989.43}, {"date": "2026-04-06", "open": 7001.28, "high": 7022.04, "low": 6942.63, "close": 6971.03}, {"date": "2026-04-07", "open": 7162.41, "high": 7281.86, "low": 7118.58, "close": 7279.21}, {"date": "2026-04-08", "open": 7238.46, "high": 7308.58, "low": 7191.59, "close": 7307.59}, {"date": "2026-04-09", "open": 7346.49, "high": 7488.02, "low": 7346.49, "close": 7458.5}, {"date": "2026-04-12", "open": 7410.08, "high": 7527.87, "low": 7351.36, "close": 7500.19}, {"date": "2026-04-13", "open": 7598.8, "high": 7686.35, "low": 7592.74, "close": 7675.95}, {"date": "2026-04-14", "open": 7750.9, "high": 7773.58, "low": 7623.59, "close": 7623.59}, {"date": "2026-04-15", "open": 7663.34, "high": 7705.03, "low": 7575.53, "close": 7621.38}, {"date": "2026-04-16", "open": 7645.81, "high": 7673.86, "low": 7607.96, "close": 7634.0}, {"date": "2026-04-19", "open": 7663.4, "high": 7692.15, "low": 7570.42, "close": 7594.11}, {"date": "2026-04-20", "open": 7560.29, "high": 7568.99, "low": 7511.83, "close": 7559.38}, {"date": "2026-04-21", "open": 7528.34, "high": 7578.05, "low": 7513.94, "close": 7541.61}, {"date": "2026-04-22", "open": 7564.42, "high": 7582.5, "low": 7378.61, "close": 7378.61}, {"date": "2026-04-23", "open": 7378.07, "high": 7383.4, "low": 7115.97, "close": 7129.49}, {"date": "2026-04-26", "open": 7158.51, "high": 7230.03, "low": 7106.52, "close": 7106.52}, {"date": "2026-04-27", "open": 7128.47, "high": 7151.51, "low": 7032.98, "close": 7072.39}, {"date": "2026-04-28", "open": 7096.61, "high": 7126.06, "low": 7063.99, "close": 7101.23}, {"date": "2026-04-29", "open": 7103.26, "high": 7109.0, "low": 6876.58, "close": 6956.8}, {"date": "2026-05-03", "open": 6988.92, "high": 7069.69, "low": 6946.06, "close": 6971.95}, {"date": "2026-05-04", "open": 6968.57, "high": 7069.21, "low": 6921.61, "close": 7057.11}, {"date": "2026-05-05", "open": 7086.34, "high": 7127.72, "low": 7049.92, "close": 7092.47}, {"date": "2026-05-06", "open": 7160.79, "high": 7207.08, "low": 7107.17, "close": 7174.32}, {"date": "2026-05-07", "open": 7182.96, "high": 7186.83, "low": 6969.4, "close": 6969.4}, {"date": "2026-05-10", "open": 6959.94, "high": 7001.68, "low": 6846.63, "close": 6905.62}, {"date": "2026-05-11", "open": 6946.85, "high": 6977.29, "low": 6762.88, "close": 6858.9}, {"date": "2026-05-12", "open": 6763.94, "high": 6787.35, "low": 6705.43, "close": 6723.32}, {"date": "2026-05-17", "open": 6628.98, "high": 6631.28, "low": 6398.79, "close": 6599.24}, {"date": "2026-05-18", "open": 6599.21, "high": 6635.13, "low": 6323.26, "close": 6370.68}, {"date": "2026-05-19", "open": 6352.2, "high": 6459.56, "low": 6215.56, "close": 6318.5}, {"date": "2026-05-20", "open": 6366.48, "high": 6378.81, "low": 6080.95, "close": 6094.94}, {"date": "2026-05-21", "open": 6065.63, "high": 6171.97, "low": 5966.86, "close": 6162.04}];
-        // Data USD/IDR
-        const usdidrData = [{"date": "2026-03-03", "open": 16863.0, "high": 17005.0, "low": 16848.0, "close": 16863.0}, {"date": "2026-03-04", "open": 16898.1, "high": 16951.0, "low": 16837.0, "close": 16898.1}, {"date": "2026-03-05", "open": 16865.0, "high": 16951.0, "low": 16829.2, "close": 16865.0}, {"date": "2026-03-06", "open": 16913.1, "high": 16994.0, "low": 16801.57, "close": 16913.1}, {"date": "2026-03-09", "open": 16933.0, "high": 17012.0, "low": 16915.4, "close": 16923.7}, {"date": "2026-03-10", "open": 16884.0, "high": 16894.0, "low": 16815.0, "close": 16886.0}, {"date": "2026-03-11", "open": 16852.0, "high": 16905.0, "low": 16844.0, "close": 16852.0}, {"date": "2026-03-12", "open": 16884.1, "high": 16908.0, "low": 16872.7, "close": 16884.0}, {"date": "2026-03-13", "open": 16908.0, "high": 16975.0, "low": 16887.5, "close": 16908.0}, {"date": "2026-03-16", "open": 16953.0, "high": 17009.0, "low": 16950.0, "close": 16952.1}, {"date": "2026-03-17", "open": 16955.0, "high": 16994.5, "low": 16946.0, "close": 16953.1}, {"date": "2026-03-18", "open": 16960.0, "high": 16994.0, "low": 16887.0, "close": 16971.3}, {"date": "2026-03-19", "open": 17041.7, "high": 17041.7, "low": 16900.0, "close": 17041.7}, {"date": "2026-03-20", "open": 16915.9, "high": 16954.0, "low": 16885.0, "close": 16915.9}, {"date": "2026-03-23", "open": 16969.0, "high": 17012.0, "low": 16849.1, "close": 16959.3}, {"date": "2026-03-24", "open": 16865.1, "high": 16952.5, "low": 16825.0, "close": 16865.1}, {"date": "2026-03-25", "open": 16797.3, "high": 16928.0, "low": 16797.3, "close": 16797.3}, {"date": "2026-03-26", "open": 16749.6, "high": 16915.0, "low": 16749.6, "close": 16749.6}, {"date": "2026-03-27", "open": 16925.0, "high": 16985.1, "low": 16918.0, "close": 16925.0}, {"date": "2026-03-29", "open": 16958.0, "high": 17028.0, "low": 16952.0, "close": 16958.0}, {"date": "2026-03-30", "open": 16975.4, "high": 17056.9, "low": 16882.0, "close": 16975.4}, {"date": "2026-03-31", "open": 16936.4, "high": 17017.0, "low": 16890.0, "close": 16936.4}, {"date": "2026-04-01", "open": 16924.1, "high": 17026.3, "low": 16898.7, "close": 16924.1}, {"date": "2026-04-02", "open": 16965.0, "high": 17023.0, "low": 16920.7, "close": 16959.0}, {"date": "2026-04-05", "open": 16988.0, "high": 17060.0, "low": 16967.9, "close": 16988.0}, {"date": "2026-04-06", "open": 17015.3, "high": 17101.0, "low": 17015.3, "close": 17015.3}, {"date": "2026-04-07", "open": 17027.4, "high": 17041.0, "low": 16930.0, "close": 17027.4}, {"date": "2026-04-08", "open": 17005.5, "high": 17098.3, "low": 16966.9, "close": 17005.5}, {"date": "2026-04-09", "open": 17059.0, "high": 17116.0, "low": 17030.8, "close": 17059.0}, {"date": "2026-04-12", "open": 17083.0, "high": 17181.7, "low": 17083.0, "close": 17083.0}, {"date": "2026-04-13", "open": 17079.2, "high": 17140.6, "low": 17079.2, "close": 17079.2}, {"date": "2026-04-14", "open": 17129.0, "high": 17174.0, "low": 17105.1, "close": 17129.0}, {"date": "2026-04-15", "open": 17146.1, "high": 17162.0, "low": 17110.8, "close": 17146.1}, {"date": "2026-04-16", "open": 17123.0, "high": 17190.9, "low": 16512.8, "close": 17123.0}, {"date": "2026-04-19", "open": 17133.0, "high": 17176.6, "low": 17096.3, "close": 17133.0}, {"date": "2026-04-20", "open": 17123.8, "high": 17151.0, "low": 17070.7, "close": 17123.8}, {"date": "2026-04-21", "open": 17133.1, "high": 17226.0, "low": 17127.8, "close": 17133.1}, {"date": "2026-04-22", "open": 17199.5, "high": 17307.1, "low": 17199.5, "close": 17199.5}, {"date": "2026-04-23", "open": 17329.0, "high": 17330.0, "low": 17188.8, "close": 17329.0}, {"date": "2026-04-26", "open": 17246.0, "high": 17246.0, "low": 17192.0, "close": 17246.0}, {"date": "2026-04-27", "open": 17216.0, "high": 17278.5, "low": 17163.8, "close": 17216.0}, {"date": "2026-04-28", "open": 17244.0, "high": 17380.0, "low": 17244.0, "close": 17244.0}, {"date": "2026-04-29", "open": 17334.2, "high": 17388.2, "low": 17267.1, "close": 17334.2}, {"date": "2026-04-30", "open": 17311.0, "high": 17358.6, "low": 17248.8, "close": 17311.0}, {"date": "2026-05-03", "open": 17327.0, "high": 17415.0, "low": 17306.8, "close": 17288.5}, {"date": "2026-05-04", "open": 17346.2, "high": 17449.1, "low": 17346.2, "close": 17346.2}, {"date": "2026-05-05", "open": 17389.8, "high": 17414.9, "low": 17238.9, "close": 17389.8}, {"date": "2026-05-06", "open": 17296.9, "high": 17367.6, "low": 17271.1, "close": 17296.9}, {"date": "2026-05-07", "open": 17294.9, "high": 17395.3, "low": 17267.3, "close": 17294.9}, {"date": "2026-05-10", "open": 17358.0, "high": 17435.7, "low": 17258.4, "close": 17358.0}, {"date": "2026-05-11", "open": 17413.0, "high": 17533.5, "low": 17413.0, "close": 17413.0}, {"date": "2026-05-12", "open": 17465.3, "high": 17555.2, "low": 17436.9, "close": 17549.0}, {"date": "2026-05-13", "open": 17498.1, "high": 17544.0, "low": 17400.7, "close": 17500.0}, {"date": "2026-05-14", "open": 17517.6, "high": 17608.0, "low": 17509.0, "close": 17530.6}, {"date": "2026-05-17", "open": 17586.0, "high": 17708.7, "low": 17519.2, "close": 17586.0}, {"date": "2026-05-18", "open": 17701.0, "high": 17764.0, "low": 17648.8, "close": 17701.0}, {"date": "2026-05-19", "open": 17708.5, "high": 17797.0, "low": 17539.7, "close": 17777.0}, {"date": "2026-05-20", "open": 17654.3, "high": 17726.0, "low": 17616.2, "close": 17658.4}, {"date": "2026-05-21", "open": 17694.0, "high": 17723.1, "low": 17605.2, "close": 17692.0}, {"date": "2026-05-22", "open": 17712.0, "high": 17712.0, "low": 17712.0, "close": 17712.0}];
+    <script>
+        // Data IHSG & USD/IDR
+        const ihsgData = [{"date": "2026-02-12", "open": 8240.01, "high": 8251.99, "low": 8170.59, "close": 8212.27}, {"date": "2026-02-17", "open": 8235.81, "high": 8310.23, "low": 8227.45, "close": 8310.23}, {"date": "2026-02-18", "open": 8357.45, "high": 8376.2, "low": 8251.81, "close": 8274.08}, {"date": "2026-02-19", "open": 8300.22, "high": 8328.42, "low": 8236.75, "close": 8271.77}, {"date": "2026-02-22", "open": 8334.54, "high": 8397.07, "low": 8327.57, "close": 8396.08}, {"date": "2026-02-23", "open": 8428.05, "high": 8437.09, "low": 8259.48, "close": 8280.83}, {"date": "2026-02-24", "open": 8318.14, "high": 8373.48, "low": 8259.75, "close": 8322.23}, {"date": "2026-02-25", "open": 8351.36, "high": 8358.96, "low": 8139.82, "close": 8235.26}, {"date": "2026-02-26", "open": 8211.3, "high": 8246.95, "low": 8093.75, "close": 8235.49}, {"date": "2026-03-01", "open": 8092.9, "high": 8133.69, "low": 8016.83, "close": 8016.83}, {"date": "2026-03-02", "open": 8059.87, "high": 8098.39, "low": 7932.52, "close": 7939.77}, {"date": "2026-03-03", "open": 7896.38, "high": 7897.81, "low": 7486.32, "close": 7577.06}, {"date": "2026-03-04", "open": 7695.35, "high": 7765.61, "low": 7678.53, "close": 7710.54}, {"date": "2026-03-05", "open": 7699.47, "high": 7700.32, "low": 7500.08, "close": 7585.69}, {"date": "2026-03-08", "open": 7374.31, "high": 7403.73, "low": 7156.68, "close": 7337.37}, {"date": "2026-03-09", "open": 7443.05, "high": 7499.82, "low": 7372.82, "close": 7440.91}, {"date": "2026-03-10", "open": 7484.77, "high": 7527.32, "low": 7380.81, "close": 7389.4}, {"date": "2026-03-11", "open": 7398.85, "high": 7436.5, "low": 7323.74, "close": 7362.12}, {"date": "2026-03-12", "open": 7338.82, "high": 7350.28, "low": 7132.21, "close": 7137.21}, {"date": "2026-03-15", "open": 7115.45, "high": 7120.19, "low": 6917.32, "close": 7022.29}, {"date": "2026-03-16", "open": 7074.61, "high": 7148.25, "low": 7059.89, "close": 7106.84}, {"date": "2026-03-24", "open": 7084.62, "high": 7302.12, "low": 7057.22, "close": 7302.12}, {"date": "2026-03-25", "open": 7313.67, "high": 7323.7, "low": 7152.59, "close": 7164.09}, {"date": "2026-03-26", "open": 7136.37, "high": 7154.56, "low": 7070.21, "close": 7097.06}, {"date": "2026-03-29", "open": 7020.53, "high": 7104.64, "low": 6945.5, "close": 7091.67}, {"date": "2026-03-30", "open": 7122.99, "high": 7155.55, "low": 7031.1, "close": 7048.22}, {"date": "2026-03-31", "open": 7149.25, "high": 7207.17, "low": 7136.25, "close": 7184.44}, {"date": "2026-04-01", "open": 7153.11, "high": 7161.8, "low": 7019.23, "close": 7026.78}, {"date": "2026-04-05", "open": 7001.56, "high": 7009.23, "low": 6934.89, "close": 6989.43}, {"date": "2026-04-06", "open": 7001.28, "high": 7022.04, "low": 6942.63, "close": 6971.03}, {"date": "2026-04-07", "open": 7162.41, "high": 7281.86, "low": 7118.58, "close": 7279.21}, {"date": "2026-04-08", "open": 7238.46, "high": 7308.58, "low": 7191.59, "close": 7307.59}, {"date": "2026-04-09", "open": 7346.49, "high": 7488.02, "low": 7346.49, "close": 7458.5}, {"date": "2026-04-12", "open": 7410.08, "high": 7527.87, "low": 7351.36, "close": 7500.19}, {"date": "2026-04-13", "open": 7598.8, "high": 7686.35, "low": 7592.74, "close": 7675.95}, {"date": "2026-04-14", "open": 7750.9, "high": 7773.58, "low": 7623.59, "close": 7623.59}, {"date": "2026-04-15", "open": 7663.34, "high": 7705.03, "low": 7575.53, "close": 7621.38}, {"date": "2026-04-16", "open": 7645.81, "high": 7673.86, "low": 7607.96, "close": 7634.0}, {"date": "2026-04-19", "open": 7663.4, "high": 7692.15, "low": 7570.42, "close": 7594.11}, {"date": "2026-04-20", "open": 7560.29, "high": 7568.99, "low": 7511.83, "close": 7559.38}, {"date": "2026-04-21", "open": 7528.34, "high": 7578.05, "low": 7513.94, "close": 7541.61}, {"date": "2026-04-22", "open": 7564.42, "high": 7582.5, "low": 7378.61, "close": 7378.61}, {"date": "2026-04-23", "open": 7378.07, "high": 7383.4, "low": 7115.97, "close": 7129.49}, {"date": "2026-04-26", "open": 7158.51, "high": 7230.03, "low": 7106.52, "close": 7106.52}, {"date": "2026-04-27", "open": 7128.47, "high": 7151.51, "low": 7032.98, "close": 7072.39}, {"date": "2026-04-28", "open": 7096.61, "high": 7126.06, "low": 7063.99, "close": 7101.23}, {"date": "2026-04-29", "open": 7103.26, "high": 7109.0, "low": 6876.58, "close": 6956.8}, {"date": "2026-05-03", "open": 6988.92, "high": 7069.69, "low": 6946.06, "close": 6971.95}, {"date": "2026-05-04", "open": 6968.57, "high": 7069.21, "low": 6921.61, "close": 7057.11}, {"date": "2026-05-05", "open": 7086.34, "high": 7127.72, "low": 7049.92, "close": 7092.47}, {"date": "2026-05-06", "open": 7160.79, "high": 7207.08, "low": 7107.17, "close": 7174.32}, {"date": "2026-05-07", "open": 7182.96, "high": 7186.83, "low": 6969.4, "close": 6969.4}, {"date": "2026-05-10", "open": 6959.94, "high": 7001.68, "low": 6846.63, "close": 6905.62}, {"date": "2026-05-11", "open": 6946.85, "high": 6977.29, "low": 7762.88, "close": 6858.9}, {"date": "2026-05-12", "open": 6763.94, "high": 6787.35, "low": 6705.43, "close": 6723.32}, {"date": "2026-05-17", "open": 6628.98, "high": 6631.28, "low": 6398.79, "close": 6599.24}, {"date": "2026-05-18", "open": 6599.21, "high": 6635.13, "low": 6323.26, "close": 6370.68}, {"date": "2026-05-19", "open": 6352.2, "high": 6459.56, "low": 6215.56, "close": 6318.5}, {"date": "2026-05-20", "open": 6366.48, "high": 6378.81, "low": 6080.95, "close": 6094.94}, {"date": "2026-05-21", "open": 6065.63, "high": 6171.97, "low": 5966.86, "close": 6162.04}];
+        const usdidrData = [{"date": "2026-03-03", "open": 16863.0, "high": 17005.0, "low": 16848.0, "close": 16863.0}, {"date": "2026-03-04", "open": 16898.1, "high": 16951.0, "low": 16837.0, "close": 16898.1}, {"date": "2026-03-05", "open": 16865.0, "high": 16951.0, "low": 16829.2, "close": 16865.0}, {"date": "2026-03-06", "open": 16913.1, "high": 16994.0, "low": 16801.57, "close": 16913.1}, {"date": "2026-03-09", "open": 16933.0, "high": 17012.0, "low": 16915.4, "close": 16923.7}, {"date": "2026-03-10", "open": 16884.0, "high": 16894.0, "low": 16815.0, "close": 16886.0}, {"date": "2026-03-11", "open": 16852.0, "high": 16905.0, "low": 16844.0, "close": 16852.0}, {"date": "2026-03-12", "open": 16884.1, "high": 16908.0, "low": 16872.7, "close": 16884.0}, {"date": "2026-03-13", "open": 16908.0, "high": 16975.0, "low": 16887.5, "close": 16908.0}, {"date": "2026-03-16", "open": 16953.0, "high": 17009.0, "low": 16950.0, "close": 16952.1}, {"date": "2026-03-17", "open": 16955.0, "high": 16994.5, "low": 16946.0, "close": 16953.1}, {"date": "2026-03-18", "open": 16960.0, "high": 16994.0, "low": 16887.0, "close": 16971.3}, {"date": "2026-03-19", "open": 17041.7, "high": 17041.7, "low": 16900.0, "close": 17041.7}, {"date": "2026-03-20", "open": 16915.9, "high": 16954.0, "low": 16885.0, "close": 16915.9}, {"date": "2026-03-23", "open": 16969.0, "high": 17012.0, "low": 16849.1, "close": 16959.3}, {"date": "2026-03-24", "open": 16865.1, "high": 16952.5, "low": 16825.0, "close": 16865.1}, {"date": "2026-03-25", "open": 16797.3, "high": 16928.0, "low": 16797.3, "close": 16797.3}, {"date": "2026-03-26", "open": 16749.6, "high": 16915.0, "low": 16749.6, "close": 16749.6}, {"date": "2026-03-27", "open": 16925.0, "high": 16985.1, "low": 16918.0, "close": 16925.0}, {"date": "2026-03-29", "open": 16958.0, "high": 17028.0, "low": 16952.0, "close": 16958.0}, {"date": "2026-03-30", "open": 16975.4, "high": 17056.9, "low": 16882.0, "close": 16975.4}, {"date": "2026-03-31", "open": 16936.4, "high": 17017.0, "low": 16890.0, "close": 16936.4}, {"date": "2026-04-01", "open": 16924.1, "high": 17026.3, "low": 16898.7, "close": 16924.1}, {"date": "2026-04-02", "open": 16965.0, "high": 17023.0, "low": 16920.7, "close": 16959.0}, {"date": "2026-04-05", "open": 16988.0, "high": 17060.0, "low": 16967.9, "close": 16988.0}, {"date": "2026-04-06", "open": 17015.3, "high": 17101.0, "low": 17015.3, "close": 17015.3}, {"date": "2026-04-07", "open": 17027.4, "high": 17041.0, "low": 16930.0, "close": 17027.4}, {"date": "2026-04-08", "open": 17005.5, "high": 17098.3, "low": 16966.9, "close": 17005.5}, {"date": "2026-04-09", "open": 17059.0, "high": 17116.0, "low": 17030.8, "close": 17059.0}, {"date": "2026-04-12", "open": 17083.0, "high": 17181.7, "low": 17083.0, "close": 17083.0}, {"date": "2026-04-13", "open": 17079.2, "high": 17140.6, "low": 17079.2, "close": 17079.2}, {"date": "2026-04-14", "open": 17129.0, "high": 17174.0, "low": 17105.1, "close": 17129.0}, {"date": "2026-04-15", "open": 17146.1, "high": 17162.0, "low": 17110.8, "close": 17146.1}, {"date": "2026-04-16", "open": 17123.0, "high": 17190.9, "low": 16512.8, "close": 17123.0}, {"date": "2026-04-19", "open": 17133.0, "high": 17176.6, "low": 17096.3, "close": 17133.0}, {"date": "2026-04-20", "open": 17123.8, "high": 17151.0, "low": 17070.7, "close": 17123.8}, {"date": "2026-04-21", "open": 17133.1, "high": 17226.0, "low": 17127.8, "close": 17133.1}, {"date": "2026-04-22", "open": 17199.5, "high": 17307.1, "low": 17199.5, "close": 17199.5}, {"date": "2026-04-23", "open": 17329.0, "high": 17330.0, "low": 17188.8, "close": 17329.0}, {"date": "2026-04-26", "open": 17246.0, "high": 17246.0, "low": 17192.0, "close": 17246.0}, {"date": "2026-04-27", "open": 17216.0, "high": 17278.5, "low": 17163.8, "close": 17216.0}, {"date": "2026-04-28", "open": 17244.0, "high": 17380.0, "low": 17244.0, "close": 17244.0}, {"date": "2026-04-29", "open": 17334.2, "high": 17388.2, "low": 17267.1, "close": 17334.2}, {"date": "2026-04-30", "open": 17311.0, "high": 17358.6, "low": 17248.8, "close": 17311.0}, {"date": "2026-05-03", "open": 17327.0, "high": 17415.0, "low": 17306.8, "close": 17288.5}, {"date": "2026-05-04", "open": 17346.2, "high": 17449.1, "low": 17346.2, "close": 17346.2}, {"date": "2026-05-05", "open": 17389.8, "high": 17414.9, "low": 17238.9, "close": 17389.8}, {"date": "2026-05-06", "open": 17296.9, "high": 17367.6, "low": 17271.1, "close": 17296.9}, {"date": "2026-05-07", "open": 17294.9, "high": 17395.3, "low": 17267.3, "close": 17294.9}, {"date": "2026-05-10", "open": 17358.0, "high": 17435.7, "low": 17258.4, "close": 17358.0}, {"date": "2026-05-11", "open": 17413.0, "high": 17533.5, "low": 17413.0, "close": 17413.0}, {"date": "2026-05-12", "open": 17465.3, "high": 17555.2, "low": 17436.9, "close": 17549.0}, {"date": "2026-05-13", "open": 17498.1, "high": 17544.0, "low": 17400.7, "close": 17500.0}, {"date": "2026-05-14", "open": 17517.6, "high": 17608.0, "low": 17509.0, "close": 17530.6}, {"date": "2026-05-17", "open": 17586.0, "high": 17708.7, "low": 17519.2, "close": 17586.0}, {"date": "2026-05-18", "open": 17701.0, "high": 17764.0, "low": 17648.8, "close": 17701.0}, {"date": "2026-05-19", "open": 17708.5, "high": 17797.0, "low": 17539.7, "close": 17777.0}, {"date": "2026-05-20", "open": 17654.3, "high": 17726.0, "low": 17616.2, "close": 17658.4}, {"date": "2026-05-21", "open": 17694.0, "high": 17723.1, "low": 17605.2, "close": 17692.0}, {"date": "2026-05-22", "open": 17712.0, "high": 17712.0, "low": 17712.0, "close": 17712.0}];
 
-        let currentScene = 'ihsg';
-        let scenes = {};
-        let animationIds = {};
-        let autoRotateIntervals = {};
-        let isInteracting = {};
+        let currentScene = 'ihsg';
+        let scenes = {};
+        let animationIds = {};
+        let autoRotateIntervals = {};
+        let isInteracting = {};
 
-        function switchPanel(panel) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
+        // PERBAIKAN: Mengganti variabel global 'event' dengan parameter 'button' langsung
+        function switchPanel(panel, button) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
 
-            document.getElementById('panel-' + panel).classList.add('active');
-            event.target.classList.add('active');
+            document.getElementById('panel-' + panel).classList.add('active');
+            button.classList.add('active');
 
-            currentScene = panel;
+            currentScene = panel;
 
-            // Restart auto-rotation for new panel
-            if (autoRotateIntervals[panel]) {
-                clearInterval(autoRotateIntervals[panel]);
-            }
-            startAutoRotate(panel);
-        }
+            if (autoRotateIntervals[panel]) {
+                clearInterval(autoRotateIntervals[panel]);
+            }
+            startAutoRotate(panel);
+        }
 
-        function createCandlestickChart(containerId, data, colorUp, colorDown, scaleFactor = 1) {
-            const container = document.getElementById(containerId);
-            const width = container.clientWidth;
-            const height = container.clientHeight;
+        function createCandlestickChart(containerId, data, colorUp, colorDown, scaleFactor = 1) {
+            const container = document.getElementById(containerId);
+            const width = container.clientWidth;
+            const height = container.clientHeight;
 
-            // Scene
-            const scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0a0a);
+            // Scene
+            const scene = new THREE.Scene();
+            // PERBAIKAN: Menghapus scene.background agar kanvas menjadi transparan mengikuti gradien CSS body
 
-            // Camera
-            const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
-            camera.position.set(0, 150, 400);
+            // Camera
+            const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
+            camera.position.set(0, 150, 400);
 
-            // Renderer
-            const renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(width, height);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-            container.appendChild(renderer.domElement);
+            // PERBAIKAN: Menambahkan alpha: true pada WebGLRenderer agar background transparan
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(width, height);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
 
-            // Controls
-            const controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.autoRotate = false;
-            controls.maxPolarAngle = Math.PI / 2;
-            controls.minDistance = 200;
-            controls.maxDistance = 800;
+            // Controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.autoRotate = false;
+            controls.maxPolarAngle = Math.PI / 2;
+            controls.minDistance = 200;
+            controls.maxDistance = 800;
 
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
-            scene.add(ambientLight);
+            // Lighting
+            const ambientLight = new THREE.AmbientLight(0x404040, 1.5);
+            scene.add(ambientLight);
 
-            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
-            dirLight.position.set(100, 200, 100);
-            dirLight.castShadow = true;
-            dirLight.shadow.mapSize.width = 2048;
-            dirLight.shadow.mapSize.height = 2048;
-            scene.add(dirLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(100, 200, 100);
+            dirLight.castShadow = true;
+            dirLight.shadow.mapSize.width = 2048;
+            dirLight.shadow.mapSize.height = 2048;
+            scene.add(dirLight);
 
-            const pointLight1 = new THREE.PointLight(0x00d4ff, 0.8, 500);
-            pointLight1.position.set(-100, 100, 100);
-            scene.add(pointLight1);
+            const pointLight1 = new THREE.PointLight(0x00d4ff, 0.8, 500);
+            pointLight1.position.set(-100, 100, 100);
+            scene.add(pointLight1);
 
-            const pointLight2 = new THREE.PointLight(0x7b2cbf, 0.8, 500);
-            pointLight2.position.set(100, 100, -100);
-            scene.add(pointLight2);
+            const pointLight2 = new THREE.PointLight(0x7b2cbf, 0.8, 500);
+            pointLight2.position.set(100, 100, -100);
+            scene.add(pointLight2);
 
-            // Find min/max for normalization
-            let minVal = Infinity, maxVal = -Infinity;
-            data.forEach(d => {
-                minVal = Math.min(minVal, d.low);
-                maxVal = Math.max(maxVal, d.high);
-            });
+            // Find min/max for normalization
+            let minVal = Infinity, maxVal = -Infinity;
+            data.forEach(d => {
+                minVal = Math.min(minVal, d.low);
+                maxVal = Math.max(maxVal, d.high);
+            });
 
-            const range = maxVal - minVal;
-            const midVal = (maxVal + minVal) / 2;
+            const range = maxVal - minVal;
+            const midVal = (maxVal + minVal) / 2;
 
-            // Create candlesticks
-            const candleGroup = new THREE.Group();
-            const spacing = 8;
-            const startX = -(data.length * spacing) / 2;
+            // Create candlesticks
+            const candleGroup = new THREE.Group();
+            const spacing = 8;
+            const startX = -(data.length * spacing) / 2;
 
-            data.forEach((d, i) => {
-                const x = startX + i * spacing;
+            data.forEach((d, i) => {
+                const x = startX + i * spacing;
 
-                // Normalize heights
-                const openY = ((d.open - midVal) / range) * 200 * scaleFactor;
-                const closeY = ((d.close - midVal) / range) * 200 * scaleFactor;
-                const highY = ((d.high - midVal) / range) * 200 * scaleFactor;
-                const lowY = ((d.low - midVal) / range) * 200 * scaleFactor;
+                const openY = ((d.open - midVal) / range) * 200 * scaleFactor;
+                const closeY = ((d.close - midVal) / range) * 200 * scaleFactor;
+                const highY = ((d.high - midVal) / range) * 200 * scaleFactor;
+                const lowY = ((d.low - midVal) / range) * 200 * scaleFactor;
 
-                const isUp = d.close >= d.open;
-                const color = isUp ? colorUp : colorDown;
+                const isUp = d.close >= d.open;
+                const color = isUp ? colorUp : colorDown;
 
-                // Body (box)
-                const bodyHeight = Math.abs(closeY - openY);
-                const bodyMid = (openY + closeY) / 2;
-                const bodyGeo = new THREE.BoxGeometry(4, Math.max(bodyHeight, 1), 4);
-                const bodyMat = new THREE.MeshStandardMaterial({ 
-                    color: color,
-                    metalness: 0.6,
-                    roughness: 0.3,
-                    emissive: color,
-                    emissiveIntensity: 0.2
-                });
-                const body = new THREE.Mesh(bodyGeo, bodyMat);
-                body.position.set(x, bodyMid, 0);
-                body.castShadow = true;
-                body.receiveShadow = true;
-                candleGroup.add(body);
+                // Body (box)
+                const bodyHeight = Math.abs(closeY - openY);
+                const bodyMid = (openY + closeY) / 2;
+                const bodyGeo = new THREE.BoxGeometry(4, Math.max(bodyHeight, 1), 4);
+                const bodyMat = new THREE.MeshStandardMaterial({ 
+                    color: color,
+                    metalness: 0.6,
+                    roughness: 0.3,
+                    emissive: color,
+                    emissiveIntensity: 0.2
+                });
+                const body = new THREE.Mesh(bodyGeo, bodyMat);
+                body.position.set(x, bodyMid, 0);
+                body.castShadow = true;
+                body.receiveShadow = true;
+                candleGroup.add(body);
 
-                // Wick (line)
-                const wickHeight = highY - lowY;
-                const wickGeo = new THREE.BoxGeometry(1, wickHeight, 1);
-                const wickMat = new THREE.MeshStandardMaterial({ 
-                    color: color,
-                    metalness: 0.8,
-                    roughness: 0.2
-                });
-                const wick = new THREE.Mesh(wickGeo, wickMat);
-                wick.position.set(x, (highY + lowY) / 2, 0);
-                candleGroup.add(wick);
+                // Wick (line)
+                const wickHeight = highY - lowY;
+                const wickGeo = new THREE.BoxGeometry(1, wickHeight, 1);
+                const wickMat = new THREE.MeshStandardMaterial({ 
+                    color: color,
+                    metalness: 0.8,
+                    roughness: 0.2
+                });
+                const wick = new THREE.Mesh(wickGeo, wickMat);
+                wick.position.set(x, (highY + lowY) / 2, 0);
+                candleGroup.add(wick);
 
-                // Add glow effect
-                const glowGeo = new THREE.BoxGeometry(5, Math.max(bodyHeight, 1) + 2, 5);
-                const glowMat = new THREE.MeshBasicMaterial({
-                    color: color,
-                    transparent: true,
-                    opacity: 0.1
-                });
-                const glow = new THREE.Mesh(glowGeo, glowMat);
-                glow.position.set(x, bodyMid, 0);
-                candleGroup.add(glow);
-            });
+                // Add glow effect
+                const glowGeo = new THREE.BoxGeometry(5, Math.max(bodyHeight, 1) + 2, 5);
+                const glowMat = new THREE.MeshBasicMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.1
+                });
+                const glow = new THREE.Mesh(glowGeo, glowMat);
+                glow.position.set(x, bodyMid, 0);
+                candleGroup.add(glow);
+            });
 
-            scene.add(candleGroup);
+            scene.add(candleGroup);
 
-            // Floor grid
-            const gridHelper = new THREE.GridHelper(600, 30, 0x333333, 0x222222);
-            gridHelper.position.y = -120;
-            scene.add(gridHelper);
+            // Floor grid
+            const gridHelper = new THREE.GridHelper(600, 30, 0x333333, 0x222222);
+            gridHelper.position.y = -120;
+            scene.add(gridHelper);
 
-            // Background particles
-            const particlesGeo = new THREE.BufferGeometry();
-            const particleCount = 200;
-            const posArray = new Float32Array(particleCount * 3);
-            for (let i = 0; i < particleCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 800;
-            }
-            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            const particlesMat = new THREE.PointsMaterial({
-                size: 2,
-                color: 0x00d4ff,
-                transparent: true,
-                opacity: 0.6
-            });
-            const particles = new THREE.Points(particlesGeo, particlesMat);
-            scene.add(particles);
+            // Background particles
+            const particlesGeo = new THREE.BufferGeometry();
+            const particleCount = 200;
+            const posArray = new Float32Array(particleCount * 3);
+            for (let i = 0; i < particleCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 800;
+            }
+            particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMat = new THREE.PointsMaterial({
+                size: 2,
+                color: 0x00d4ff,
+                transparent: true,
+                opacity: 0.6
+            });
+            const particles = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particles);
 
-            // Store references
-            scenes[containerId] = {
-                scene, camera, renderer, controls, candleGroup, particles
-            };
+            // Store references
+            scenes[containerId] = {
+                scene, camera, renderer, controls, candleGroup, particles
+            };
 
-            // Interaction detection
-            let interactionTimeout;
-            isInteracting[containerId] = false;
+            let interactionTimeout;
+            isInteracting[containerId] = false;
 
-            controls.addEventListener('start', () => {
-                isInteracting[containerId] = true;
-                clearTimeout(interactionTimeout);
-            });
+            controls.addEventListener('start', () => {
+                isInteracting[containerId] = true;
+                clearTimeout(interactionTimeout);
+            });
 
-            controls.addEventListener('end', () => {
-                interactionTimeout = setTimeout(() => {
-                    isInteracting[containerId] = false;
-                }, 3000);
-            });
+            controls.addEventListener('end', () => {
+                interactionTimeout = setTimeout(() => {
+                    isInteracting[containerId] = false;
+                }, 3000);
+            });
 
-            // Animation loop
-            function animate() {
-                animationIds[containerId] = requestAnimationFrame(animate);
+            function animate() {
+                animationIds[containerId] = requestAnimationFrame(animate);
 
-                // Auto-rotate if not interacting
-                if (!isInteracting[containerId]) {
-                    candleGroup.rotation.y += 0.003;
-                }
+                if (!isInteracting[containerId]) {
+                    candleGroup.rotation.y += 0.003;
+                }
 
-                // Animate particles
-                particles.rotation.y += 0.001;
-                particles.rotation.x += 0.0005;
+                particles.rotation.y += 0.001;
+                particles.rotation.x += 0.0005;
 
-                controls.update();
-                renderer.render(scene, camera);
-            }
-            animate();
+                controls.update();
+                renderer.render(scene, camera);
+            }
+            animate();
 
-            // Handle resize
-            window.addEventListener('resize', () => {
-                const newWidth = container.clientWidth;
-                const newHeight = container.clientHeight;
-                camera.aspect = newWidth / newHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(newWidth, newHeight);
-            });
-        }
+            window.addEventListener('resize', () => {
+                const newWidth = container.clientWidth;
+                const newHeight = container.clientHeight;
+                camera.aspect = newWidth / newHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(newWidth, newHeight);
+            });
+        }
 
-        function startAutoRotate(panel) {
-            const containerId = 'chart-' + panel;
-            if (scenes[containerId]) {
-                isInteracting[containerId] = false;
-            }
-        }
+        function startAutoRotate(panel) {
+            const containerId = 'chart-' + panel;
+            if (scenes[containerId]) {
+                isInteracting[containerId] = false;
+            }
+        }
 
-        // Initialize charts
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                createCandlestickChart('chart-ihsg', ihsgData, 0x2ed573, 0xff4757, 1.0);
-                createCandlestickChart('chart-usdidr', usdidrData, 0x2ed573, 0xff4757, 1.0);
-            }, 100);
-        });
-    </script>
+        // Initialize charts
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                createCandlestickChart('chart-ihsg', ihsgData, 0x2ed573, 0xff4757, 1.0);
+                createCandlestickChart('chart-usdidr', usdidrData, 0x2ed573, 0xff4757, 1.0);
+            }, 150); // Sedikit menaikkan jeda agar browser selesai merender layout dengan sempurna
+        });
+    </script>
 </body>
 </html>
